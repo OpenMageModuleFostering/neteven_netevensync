@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Adminhtml layout updates
+ * 
+ * @category	Neteven
+ * @package		Neteven_NetevenSync
+ * @copyright	Copyright (c) 2013 Agence Soon. (http://www.agence-soon.fr)
+ * @licence		http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author		Hervé G. - Twitter : @vrnet
+ */
+-->
+<layout>
+    <default>
+        <reference name="notifications">
+            <block type="netevensync/adminhtml_notifications" name="netevensync.notifications" template="netevensync/notifications.phtml"/>
+        </reference>
+    </default>
+    
+    <adminhtml_netevensync_runprocess>
+        <remove name="root"/>
+        <block type="adminhtml/page" name="convert_root" output="toHtml" template="page.phtml">
+            <block type="adminhtml/page_head" name="convert_root_head" as="head" template="page/head.phtml">
+                <action method="addJs"><script>prototype/prototype.js</script></action>
+                <action method="addJs"><script>prototype/validation.js</script></action>
+                <action method="addJs"><script>varien/js.js</script></action>
+                <action method="addJs"><script>mage/translate.js</script></action>
+                <action method="addJs"><script>mage/adminhtml/tools.js</script></action>
+            </block>
+            <block type="netevensync/adminhtml_process_run" name="netevensync.process.run" template="netevensync/process/run.phtml" output="toHtml"/>
+        </block>
+    </adminhtml_netevensync_runprocess>
+    
+    <adminhtml_netevensync_product>
+        <reference name="head">
+            <action method="addJs"><script>neteven/netevensync.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="netevensync/adminhtml_product_view" name="netevensync.product.view"/>
+        </reference>
+        <reference name="left">
+            <block type="netevensync/adminhtml_product_view_tabs" name="netevensync.product.view.tabs"/>
+        </reference>
+    </adminhtml_netevensync_product>
+    
+    <adminhtml_netevensync_productexported>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="adminhtml/template" name="exported.header" template="netevensync/product/exported/header.phtml"/>
+            <block type="netevensync/adminhtml_product_view_tab_exported" name="netevensync.product.view.exported"/>
+            <block type="adminhtml/widget_grid_serializer" name="netevensync_product_exported_serializer">
+                <reference name="netevensync_product_exported_serializer">
+                    <action method="initSerializerBlock">
+                        <grid_block_name>netevensync.product.view.exported</grid_block_name>
+                        <data_callback>getExportedSelectedProducts</data_callback>
+                        <hidden_input_name>netevensync[exported]</hidden_input_name>
+                        <reload_param_name>netevensync_exported</reload_param_name>
+                    </action>
+                </reference>
+            </block>
+        </block>
+    </adminhtml_netevensync_productexported>
+    
+    <adminhtml_netevensync_productexportedgrid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="netevensync/adminhtml_product_view_tab_exported" name="netevensync.product.view.exported"/>
+        </block>
+    </adminhtml_netevensync_productexportedgrid>
+    
+    <adminhtml_netevensync_productavailable>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="adminhtml/template" name="available.header" template="netevensync/product/available/header.phtml"/>
+            <block type="netevensync/adminhtml_product_view_tab_available" name="netevensync.product.view.available"/>
+            <block type="adminhtml/widget_grid_serializer" name="netevensync_product_available_serializer">
+                <reference name="netevensync_product_available_serializer">
+                    <action method="initSerializerBlock">
+                        <grid_block_name>netevensync.product.view.available</grid_block_name>
+                        <data_callback>getAvailableSelectedProducts</data_callback>
+                        <hidden_input_name>netevensync[available]</hidden_input_name>
+                        <reload_param_name>netevensync_available</reload_param_name>
+                    </action>
+                </reference>
+            </block>
+        </block>
+    </adminhtml_netevensync_productavailable>
+    
+    <adminhtml_netevensync_productavailablegrid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="netevensync/adminhtml_product_view_tab_available" name="netevensync.product.view.available"/>
+        </block>
+    </adminhtml_netevensync_productavailablegrid>
+    
+</layout>

@@ -1,0 +1,465 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+*{margin:0;padding:0;}
+body {
+	font:13.34px helvetica,arial,freesans,clean,sans-serif;
+	color:black;
+	line-height:1.4em;
+	background-color: #F8F8F8;
+	padding: 0.7em;
+}
+p {
+	margin:1em 0;
+	line-height:1.5em;
+}
+table {
+	font-size:inherit;
+	font:100%;
+	margin:1em;
+}
+table th{border-bottom:1px solid #bbb;padding:.2em 1em;}
+table td{border-bottom:1px solid #ddd;padding:.2em 1em;}
+input[type=text],input[type=password],input[type=image],textarea{font:99% helvetica,arial,freesans,sans-serif;}
+select,option{padding:0 .25em;}
+optgroup{margin-top:.5em;}
+pre,code{font:12px Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;}
+pre {
+	margin:1em 0;
+	font-size:12px;
+	background-color:#eee;
+	border:1px solid #ddd;
+	padding:5px;
+	line-height:1.5em;
+	color:#444;
+	overflow:auto;
+	-webkit-box-shadow:rgba(0,0,0,0.07) 0 1px 2px inset;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;border-radius:3px;
+}
+pre code {
+	padding:0;
+	font-size:12px;
+	background-color:#eee;
+	border:none;
+}
+code {
+	font-size:12px;
+	background-color:#f8f8ff;
+	color:#444;
+	padding:0 .2em;
+	border:1px solid #dedede;
+}
+img{border:0;max-width:100%;}
+abbr{border-bottom:none;}
+a{color:#4183c4;text-decoration:none;}
+a:hover{text-decoration:underline;}
+a code,a:link code,a:visited code{color:#4183c4;}
+h2,h3{margin:1em 0;}
+h1,h2,h3,h4,h5,h6{border:0;}
+h1{font-size:170%;border-top:4px solid #aaa;padding-top:.5em;margin-top:1.5em;}
+h1:first-child{margin-top:0;padding-top:.25em;border-top:none;}
+h2{font-size:150%;margin-top:1.5em;border-top:4px solid #e0e0e0;padding-top:.5em;}
+h3{margin-top:1em;}
+hr{border:1px solid #ddd;}
+ul{margin:1em 0 1em 2em;}
+ol{margin:1em 0 1em 2em;}
+ul li,ol li{margin-top:.5em;margin-bottom:.5em;}
+ul ul,ul ol,ol ol,ol ul{margin-top:0;margin-bottom:0;}
+blockquote{margin:1em 0;border-left:5px solid #ddd;padding-left:.6em;color:#555;}
+dt{font-weight:bold;margin-left:1em;}
+dd{margin-left:2em;margin-bottom:1em;}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>Official Neteven Marketplace Connector</title>
+
+</head>
+<body>
+<h1>Official Neteven Marketplace Connector</h1>
+
+<p>Module Version: 1.1.0.0</p>
+
+<h2>Compatibility</h2>
+
+<p>The Neteven connector is compatible with the following Magento versions:</p>
+
+<ul>
+<li>Magento Community Edition 1.6+ > 1.8</li>
+<li>Magento Enterprise Edition 1.11+ > 1.13</li>
+</ul>
+
+
+<h2>Setup</h2>
+
+<h3>With Magento Connect</h3>
+
+<p>The module is available on Magento Connect. The setup process is standard and like any other community module.</p>
+
+<p>1 . Login to your Magento Connect Manager page with your backend credentials:</p>
+
+<pre><code>http://domain.com/downloader/
+</code></pre>
+
+<p><img src="images/downloader.jpg" alt="Downloader" /></p>
+
+<p>2 . Insert the Neteven module extension key in the matching field:</p>
+
+<pre><code>http://connect20.magentocommerce.com/community/neteven_netevensync
+</code></pre>
+
+<p><img src="images/extension_key.jpg" alt="Downloader" /></p>
+
+<p>3 . Validate by clicking the <strong>Install</strong> then <strong>Proceed</strong> button</p>
+
+<p>4 . The module will now be available in your installed modules list</p>
+
+<p><img src="images/installed.jpg" alt="Downloader" /></p>
+
+<p>5 . The setup is now complete. You can now return to your backend with the link <strong>Return to Admin</strong></p>
+
+<h3>Checking your setup</h3>
+
+<p>Once the module installed, check that the matching configuration item <strong>Neteven Synchronization</strong> is available in the <strong>Services</strong> part of the <strong>System > Configuration</strong> panel. You may have to logout and login again in case a 404 error appears when browsing to the Neteven Synchronization configuration panel.</p>
+
+<p><img src="images/config_item.jpg" alt="Downloader" /></p>
+
+<h2>Configuration</h2>
+
+<h3>Requirements</h3>
+
+<h4>Scheduled tasks (cron)</h4>
+
+<p>In order to use the automatic import/export processes shipped with the module, your system must already be configured to use the Magento scheduled tasks (cron). You can check the <a href="http://www.magentocommerce.com/wiki/1_-_installation_and_configuration/how_to_setup_a_cron_job#magento_and_crontab">official documentation</a> for further information on how to proceed to cron tasks setup.</p>
+
+<h4>Activating and whitelisting Neteven WebService</h4>
+
+<p>Please check with your Neteven Account Manager that your WebService level access is enabled.</p>
+
+<p>If your Magento server is blocking outgoing connections to external machines, you should now authorize http connections to the <code>http://ws.neteven.com</code> host.</p>
+
+<h4>Tax rates by country setup</h4>
+
+<p>In order to enable the orders synchronization, you have to check if your Magento instance is configured to handle tax calculations for orders shipped in all available countries selected in Neteven marketplaces.</p>
+
+<p>You will have to setup the tax rate to suit the marketplaces enabled in your Neteven account.</p>
+
+<p>Check the <a href="http://www.magentocommerce.com/knowledge-base/categories/category/tax-settings/">official documentation</a> for more information on tax rates configuration.</p>
+
+<h3>General setup</h3>
+
+<p>The module configuration is available under the <strong>Neteven Synchronization</strong> item in the <strong>Services</strong> panel of the <strong>System > Configuration</strong> page.</p>
+
+<p>All settings listed below have a Magento global scope impacting all websites, stores and storeviews configured on your Magento instance. This module only works between one Magento instance and one Neteven user account.</p>
+
+<p>The configuration page follows Magento backend principles. You will have to save settings before launching any manual import/export or make a connection parameters test (see below).</p>
+
+<p>The only required fields of the configuration are account credentials. In order to configure them, fill in the credentials you usually use to connect the Neteven backend in the <strong>Email</strong> and <strong>Password</strong> fields.</p>
+
+<p><img src="images/credentials.jpg" alt="Credentials" /></p>
+
+<p>Once completed, save the configuration and click on <strong>Test connection setup</strong>.</p>
+
+<p>Magento should now display a success alert showing that your credentials are correct.</p>
+
+<p><img src="images/credentials_ok.jpg" alt="Credentials" /></p>
+
+<p>If an error occurs, the following message will be displayed:</p>
+
+<p><img src="images/credentials_error.jpg" alt="Credentials" /></p>
+
+<p>Check that the credentials typed match your Neteven account or contact your Neteven Account Manager (contact information in the <strong>HelpDesk</strong> section below).</p>
+
+<p>Please also make sure to save the configuration after changing your credentials information and prior to making any connection test with new credentials information.</p>
+
+<h4>Debugging and sandbox mode</h4>
+
+<p>When turning on the debugging mode, all contents from requests sent to and all responses received from the Neteven <code>http://ws.neteven.com</code> host are logged in a file named "neteven_debugging.log" saved in the /var/log folder of your Magento instance.</p>
+
+<p>When using the Sandbox mode, no real order are synchronized between Magento and the Neteven platform. Only orders that are present in the "Sandbox" marketplace in the Neteven platform are synchronized. <strong>Please contact you Neteven Account Manager (contact information in the HelpDesk section below) to make sure that the "Sandbox" marketplace has been properly setup</strong>.</p>
+
+<h3>Inventory synchronization</h3>
+
+<p>The first configuration step of the module is about exporting your products catalog.</p>
+
+<p><img src="images/inventory_config.jpg" alt="inventory_config" /></p>
+
+<p>The fields are:</p>
+
+<ul>
+<li>Enabled: Yes/No. Allows you to choose if you want to enable synchronization of catalog products.</li>
+<li>Synchronization frequency: Change the automatic incremental exports frequency. This setting needs to be set accordingly to your update needs.</li>
+<li>Start hour: Time of the first export iteration and calculation base for every export then. Example: If you have a "4 hours" frequency and a "Start hour" at 3am, exports will occure at 3am, 7am, 11am, 3pm, 7pm and 11pm.</li>
+<li>Export only selected products: the module will, by default, export all products available in the Magento catalog. In order to restrict the export to only needed products, select Yes in this field and manage your products selection in the dedicated panel (see below). Only these products will be sent to Neteven.</li>
+<li>Export Out-Of-Stock products: Allows you to choose if you want to send only in-stock products or all products of the Magento catalog.</li>
+<li>Included Attributes: This multiple selection field lists all product attributes created in your Magento instance that are relevant for export. Select the ones that need to be included in the export file. <strong>In order to be correctly processed, these attributes must also be configured on the Neteven backend based on the product type</strong>.</li>
+</ul>
+
+
+<p>In order to provide more accurate data to the marketplace and link your products easily, Neteven allows you to provide additional fields like the ISBN number for books.</p>
+
+<p>As these attributes are not created by default in a fresh Magento setup, you will need to create them by using the attributes sets system in order to use them. Once created, you will have to map them in the configuration panel.</p>
+
+<p>To map them, please select the right attribute for the specific fields you need:</p>
+
+<p><img src="images/inventory_mapping.jpg" alt="Mapping" /></p>
+
+<p>You will be able to select, for each specific Neteven attribute, its matching Magento attribute. Only those useful for your products catalog should be configured.</p>
+
+<h4>Attributes that are synchronized by default</h4>
+
+<p>Some product attributes are required by Neteven so they are exported automatically by the module.</p>
+
+<p>Those attributes (attributes codes) are:</p>
+
+<ul>
+<li><code>name</code></li>
+<li><code>short_description</code></li>
+<li><code>description</code></li>
+<li><code>model</code></li>
+<li><code>cost</code></li>
+<li><code>weight</code></li>
+<li><code>price</code></li>
+<li><code>weee</code></li>
+<li><code>image</code></li>
+<li><code>media_gallery</code></li>
+<li>and tax rate which is calculated based on the <code>tax_class_id</code> attribute</li>
+</ul>
+
+
+<h4>Multi-views management / multi-languages</h4>
+
+<p>Magento store views are mapped with Neteven languages. Each Magento store view can be mapped to a Neteven language. If filled up, product data from each store view is exported to the corresponding language in Neteven.</p>
+
+<p>In order to configure a <em>Magento store view &lt;--> Neteven language</em> mapping, change configuration scope and choose a store view.</p>
+
+<p>Configuration area below must be visible :</p>
+
+<p><img src="images/multistore_inv_setup.jpg" alt="Multi-views managament" /></p>
+
+<p>Choose a Neteven language to which the current store view must be mapped. Repeat for other store views to export.</p>
+
+<ul>
+<li><strong>Please note</strong>: price data is always [GLOBAL]. Attributes with a "price" type are always sent with their default value.</li>
+<li><strong>Please note</strong>: categories are always [GLOBAL]. Default category tree is always sent to Neteven.</li>
+<li><strong>Please note</strong>: as soon as a <em>Magento store view &lt;--> Neteven language</em> mapping is done, data from store views having a mapping is solely exported. <strong>Default data is exported when no mapping exists</strong></li>
+</ul>
+
+
+<p>Localized information in Neteven Console, example:</p>
+
+<p><img src="images/multistore_inv_neteven.jpg" alt="Localized information" /></p>
+
+<blockquote><p>Please get in touch with your Account Manager Neteven in case of specific needs.</p></blockquote>
+
+<h3>Stocks synchronization</h3>
+
+<p>Once the inventory synchronization has been configured, the next step is to setup the stock synchronization. Just edit the following fields:</p>
+
+<p><img src="images/stocks.jpg" alt="Stocks" /></p>
+
+<ul>
+<li>Enabled: Yes/No. Allows you to choose if you want to use synchronize stock data.</li>
+<li>Synchronization frequency: Change the automatic incremental exports frequency. This setting need to be set accordingly to your update needs.</li>
+<li>Start hour: Time of the first export iteration and calculation base for every export then. Example: If you have a "4 hours" frequency and a "Start hour" at 3am, exports will occure at 3am, 7am, 11am, 3pm, 7pm and 11pm.</li>
+<li>Export only selected products: the module will, by default, export all products available in the Magento catalog. In order to restrict the export to only needed products, select Yes in this field and manage your products selection in the dedicated panel. Only the stock values for products present in selected products will be sent to Neteven. This setting should be configured according to the inventory synchronization setup.</li>
+<li>Export Out-Of-Stock products: Allows you to choose if you want to send only in-stock product stock values or all products stock values of the Magento catalog.</li>
+<li>Synchronize Prices Attributes : Price data (from attributes synchronized by default + configured attributes of a "price" type) is added to stock information.</li>
+</ul>
+
+
+<p>The data volume being lower than the inventory synchronization, you can select a higher synchronization frequency.</p>
+
+<h3>Orders synchronization</h3>
+
+<p>The configuration final step is to configure the orders synchronization. The Neteven module works both ways:</p>
+
+<ul>
+<li>Magento gets all new marketplaces orders from Neteven</li>
+<li>Magento sends back the updated order statuses to Neteven which then updates all marketplaces.</li>
+</ul>
+
+
+<p>The setup is based on the following fields:</p>
+
+<p><img src="images/orders.jpg" alt="Orders" /></p>
+
+<ul>
+<li>Enabled: Yes/No. Allow you to choose if you want to enable orders import and export.</li>
+<li>Synchronization frequency: Change the automatic incremental exports frequency. This setting needs to be set accordingly to your update needs.</li>
+<li>Start hour: Time of the first export iteration and calculation base for every export then.    Example: If you have a "4 hours" frequency and a "Start hour" at 3am, exports will occure at 3am, 7am, 11am, 3pm, 7pm and 11pm.</li>
+<li>Minimal order status: Define the minimum status needed for the orders to be synchronized from Neteven and its marketplaces. Any order with a status below this threshold will be ignored.</li>
+</ul>
+
+
+<p>Magento order statuses being configurable, you will need to map your local Magento order statuses with the default Neteven ones. Without this step, the orders workflow can't be properly executed.</p>
+
+<p>In order to do that mapping, slide down the <em>Neteven -> Magento Orders Mapping</em> block. For each Neteven status, select the matching Magento status. While configuring a default Magento instance, you should obtain these settings:</p>
+
+<p><img src="images/orders_mapping1.jpg" alt="OrdersMapping1" /></p>
+
+<p>Once this step is completed, you will have to do the same for the reverse way. Slide down to the <em>Magento -> Neteven Orders Mapping</em> block. A full list of all available Magento order statuses will be displayed. Select the matching Neteven status for each line of the order workflow:</p>
+
+<p><img src="images/orders_mapping2.jpg" alt="OrdersMapping2" /></p>
+
+<p>Save all settings by clicking on the <strong>Save</strong> button in the top right hand corner.</p>
+
+<h4><a id="orders_multistore"></a>Multi-store / multi-languages management</h4>
+
+<p>Magento store views are mapped with Neteven countries. Each Magento store view can be mapped to a Neteven country. Orders imported from Neteven to Magento are thus attached to their respective store views depending on their country.</p>
+
+<p>To configure a <em>Magento store view &lt;--> Neteven country</em> mapping, please change current configuration scope and choose a store view.</p>
+
+<p>Configuration area below must be visible :</p>
+
+<p><img src="images/multistore_orders_setup.jpg" alt="Stocks" /></p>
+
+<p>Choose which country to map to the current store view. Repeat for other store views.</p>
+
+<ul>
+<li><strong>Please note</strong>: if the country of an order imported from Neteven is not mapped to any store view, the order will be attached to the default store view.</li>
+</ul>
+
+
+<p>Sample orders imported from Neteven and attached to different store views:</p>
+
+<p><img src="images/multistore_orders.jpg" alt="Orders by country" /></p>
+
+<blockquote><p>Please get in touch with your Account Manager Neteven in case of specific needs.</p></blockquote>
+
+<h3>Shipping method selection</h3>
+
+<p>Even if the Neteven module includes the update of shipping costs from Neteven data, you will need to select the shipping method used for the marketplaces related shipments. Select in the list of all available shipping methods the one you want to be used for all Neteven orders:</p>
+
+<p><img src="images/shipping.jpg" alt="Shipping" /></p>
+
+<p><strong>Please note - multi-views configuration :</strong> Changing configuration scope gives the ability to choose a different carrier for each store view. It is then required to configure <em>Magento store view &lt;--> Neteven country</em> mappings (see <a href="#orders_multistore">Multi-store / multi-languages management</a>).</p>
+
+<h2>Usage</h2>
+
+<h3>Manual import/export</h3>
+
+<p>Once the configuration has been done and saved, all files exchanges will be automatically managed by the scheduling system at defined hours.</p>
+
+<p>If however want to force a synchronisation, you can, for every data type, click on the <strong>Synchronize now</strong> button.</p>
+
+<p>For the inventory synchronization, you can force an incremental or a full synchronization. Please be aware that the volume needed to export all products can impact your site performance. The panel on the left displays the number of products being queued (added, edited or deleted) for the next synchronization:</p>
+
+<p><img src="images/product_incremental.jpg" alt="ProductIncremental" /></p>
+
+<p>The orders synchronization block lets you search and synchronize all orders from a specified datetime. In the following example, all orders updated on Neteven and Magento after January 1st, 2013 will be imported and exported.</p>
+
+<p><img src="images/orders_date.jpg" alt="OrdersDate" /></p>
+
+<p>In case of a status mismatch for an order (eg. an order has a Neteven status below the Magento one), it will be ignored.</p>
+
+<p>In order to bypass the PHP and Magento execution time and memory limits, the synchronization system uses the Magento Ajax dataflow system. When manually launching a synchronization, a new window will be opened:</p>
+
+<p><img src="images/manual_sync.jpg" alt="ManualSync" /></p>
+
+<p><strong>This window must stay opened until the process is completed for the synchronization to properly work</strong>. Once finished, you can close the process window.</p>
+
+<h3>Neteven Console</h3>
+
+<p><em>Even MarketPlaces</em>, Neteven's inventory and orders management is available in the Magento admin. It is available by going to: <strong>Catalog > Neteven > Neteven Console</strong>.</p>
+
+<p>You must then provide your Neteven credentials:</p>
+
+<p><img src="images/console.jpg" alt="Console" /></p>
+
+<p>Once logged in, you can access all Neteven features right thru the Magento admin:</p>
+
+<p><img src="images/console_logged.jpg" alt="ConsoleLogged" /></p>
+
+<h3>Products selection</h3>
+
+<p>The module default behavior is to export the complete products catalog to the Neteven system. If you want to only synchronize some of them, you will have to enable and configure the <strong>Neteven selection</strong>.</p>
+
+<ol>
+<li>Check that the inventory synchronization field <strong>Export only selected products</strong> is set to <strong>Yes</strong></li>
+<li>Also check the same setting for the stock synchronization.</li>
+</ol>
+
+
+<p>You can now go to the menu item <strong>Catalog > Neteven > Neteven Selection</strong>.</p>
+
+<p>This configuration screen is divided in two parts:</p>
+
+<ul>
+<li>Exported products: list all products currently being selected for the export process.</li>
+<li>Available products: display all products that are not yet being selected.</li>
+</ul>
+
+
+<p>To add some products to the selection, just click on <strong>Available products</strong> and select the ones to be exported by checking their row.</p>
+
+<p><img src="images/available.jpg" alt="Available" /></p>
+
+<p>You can filter the results list and cycle through them by using the pagination system like in any other Magento data grid.</p>
+
+<p>Once the products you want to add are checked, validate by clicking on <strong>Add selected products to the selection</strong>. Once the page has been reloaded, you will be on the exported products list.</p>
+
+<p><img src="images/export.jpg" alt="Export" /></p>
+
+<p>Once again, you can use the filter and pagination systems to navigate through this list.</p>
+
+<p>To remove a product from the selection, simply tick its corresponding checkbox in the exported products listing and click on the <strong>Remove selected products from the selection</strong> button. The page will be reloaded with an updated list.</p>
+
+<p>Also, by clicking the <strong>Reset</strong> button, the whole "Neteven Selection" page will be reloaded and <strong>any checked item in "Exported Products" and "Available Products" will be unchecked</strong>.</p>
+
+<h3>Errors logging</h3>
+
+<p>When an unexpected behaviour comes up while synchronizing, the Magento administrator is automatically alerted by the display of a Magento error notice specifying which synchronizations experienced errors:</p>
+
+<p><img src="images/error_dash.jpg" alt="ErrorDash" /></p>
+
+<p>More details on the error will be available in the neteven module log:</p>
+
+<pre><code>user@server:~# tail -f {Magento path}/var/log/neteven.log
+</code></pre>
+
+<p>You will be able to detect which entity is causing the error and an error message on the reason why it failed:</p>
+
+<pre><code>2013-03-28T10:49:52+00:00 DEBUG (7): Imported order item does not exist in catalog. Item ID: 6734200, Order ID: 3788519, Sku: TEST_1
+</code></pre>
+
+<p>When an entity id is blocking the synchronization, it will be automatically ignored unless the administrator modifies it.</p>
+
+<h2>HelpDesk</h2>
+
+<p>Neteven - www.neteven.com</p>
+
+<p>Phone: +33 (0) 1 83 64 59 50</p>
+
+<p>http://www.neteven.co.uk/neteven-contact-us.html</p>
+
+<h2>Credits</h2>
+
+<p>Development: Agence SOON</p>
+
+<p>http://www.agence-soon.fr</p>
+</body>
+</html>

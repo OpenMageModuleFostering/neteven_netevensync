@@ -1,0 +1,416 @@
+<!--
+/**
+ * This module manages data synchronisation from and to Neteven platform
+ * 
+ * @category    Neteven
+ * @package     Neteven_NetevenSync
+ * @copyright   Copyright (c) 2013 Agence Soon. (http://www.agence-soon.fr)
+ * @licence     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      Hervé Guétin <herve.guetin@agence-soon.fr> <@herveguetin>
+ */
+-->
+<!--
+@EVO	Flag Neteven Orders in admin Orders Grid
+@EVO	"Empty Neteven Selection" button in Neteven Selection
+@EVO	"Remove from Neteven Selection" in admin Products Grid
+@EVO	Customer account creation on orders import
+ -->
+<config>
+    <modules>
+        <Neteven_NetevenSync>
+            <version>2.0.0.2</version>
+        </Neteven_NetevenSync>
+    </modules>
+    
+    <global>
+        <events>
+            <catalog_product_save_after>
+                <observers>
+                    <!-- Register increment -->
+                    <netevensync_register_increment_product_save>
+                        <type>singleton</type>
+                        <class>Neteven_NetevenSync_Model_Observer</class>
+                        <method>registerIncrement</method>
+                        <args>
+                            <process_type>inventory</process_type>
+                        </args>
+                    </netevensync_register_increment_product_save>
+                </observers>
+            </catalog_product_save_after>
+            <catalog_product_delete_after>
+                <observers>
+                    <!-- Register increment -->
+                    <netevensync_register_increment_product_delete>
+                        <type>singleton</type>
+                        <class>Neteven_NetevenSync_Model_Observer</class>
+                        <method>registerIncrement</method>
+                        <args>
+                            <process_type>inventory</process_type>
+                        </args>
+                    </netevensync_register_increment_product_delete>
+                </observers>
+            </catalog_product_delete_after>
+            <sales_order_save_after>
+                <observers>
+                    <!-- Register increment -->
+                    <netevensync_register_increment_order_save>
+                        <type>singleton</type>
+                        <class>Neteven_NetevenSync_Model_Observer</class>
+                        <method>registerIncrement</method>
+                        <args>
+                            <process_type>order</process_type>
+                        </args>
+                    </netevensync_register_increment_order_save>
+                </observers>
+            </sales_order_save_after>
+        </events>
+        <blocks>
+            <netevensync>
+                <class>Neteven_NetevenSync_Block</class>
+            </netevensync>
+        </blocks>
+        <helpers>
+            <netevensync>
+                <class>Neteven_NetevenSync_Helper</class>
+            </netevensync>
+        </helpers>
+        <models>
+        	<adminhtml>
+        		<rewrite>
+        			<config>Neteven_NetevenSync_Model_Adminhtml_Config</config>
+        		</rewrite>
+        	</adminhtml>
+            <netevensync>
+                <class>Neteven_NetevenSync_Model</class>
+                <resourceModel>netevensync_resource</resourceModel>
+            </netevensync>
+            <netevensync_resource>
+                <class>Neteven_NetevenSync_Model_Resource</class>
+                <entities>
+                    <inventory>
+                        <table>netevensync_inventory</table>
+                    </inventory>
+                    <log>
+                        <table>netevensync_log</table>
+                    </log>
+                    <process>
+                        <table>netevensync_process</table>
+                    </process>
+                    <product>
+                        <table>netevensync_product</table>
+                    </product>
+                    <order>
+                        <table>netevensync_order</table>
+                    </order>
+                    <order_link>
+                        <table>netevensync_order_link</table>
+                    </order_link>
+                    <order_temp>
+                        <table>netevensync_order_temp</table>
+                    </order_temp>
+                </entities>
+            </netevensync_resource>
+        </models>
+        <resources>
+            <netevensync_setup>
+                <setup>
+                    <module>Neteven_NetevenSync</module>
+                </setup>
+            </netevensync_setup>
+        </resources>
+    </global>
+    
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <netevensync after="Mage_Adminhtml">Neteven_NetevenSync_Adminhtml</netevensync>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    
+    <adminhtml>
+        <events>
+            <adminhtml_init_system_config>
+                <observers>
+                    <!-- Update system config -->
+                    <netevensync_append_config_nodes>
+                        <type>singleton</type>
+                        <class>Neteven_NetevenSync_Model_Config</class>
+                        <method>appendConfigNodes</method>
+                    </netevensync_append_config_nodes>
+                </observers>
+            </adminhtml_init_system_config>
+            <model_config_data_save_before>
+                <observers>
+                    <!-- Add notice if export Neteven Selection has changed and sets flag to force export of not-in-selection products as out-of-stock -->
+                    <netevensync_config_neteven_selection_changed>
+                        <type>singleton</type>
+                        <class>Neteven_NetevenSync_Model_Observer</class>
+                        <method>addNoticeConfigChange</method>
+                    </netevensync_config_neteven_selection_changed>
+                    <!-- Update next sync dates -->
+                    <netevensync_config_neteven_update_nextsync>
+                        <type>singleton</type>
+                        <class>Neteven_NetevenSync_Model_Observer</class>
+                        <method>updateNextSync</method>
+                    </netevensync_config_neteven_update_nextsync>
+                </observers>
+            </model_config_data_save_before>
+            <catalog_product_attribute_update_before>
+                <observers>
+                    <!-- Register increment -->
+                    <netevensync_register_increment_mass_update>
+                        <type>singleton</type>
+                        <class>Neteven_NetevenSync_Model_Observer</class>
+                        <method>registerMultiIncrement</method>
+                    </netevensync_register_increment_mass_update>
+                </observers>
+            </catalog_product_attribute_update_before>
+        </events>
+        <translate>
+            <modules>
+                <Neteven_NetevenSync>
+                    <files>
+                        <default>Neteven_NetevenSync.csv</default>
+                    </files>
+                </Neteven_NetevenSync>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <netevensync>
+                    <file>netevensync.xml</file>
+                </netevensync>
+            </updates>
+        </layout>
+        <menu>
+            <catalog>
+                <children>
+                    <netevensync>
+                        <title>Neteven</title>
+                        <sort_order>1000</sort_order>
+                        <children>
+                            <product translate="title" module="netevensync">
+                                <title>Neteven Selection</title>
+                                <sort_order>10</sort_order>
+                                <action>adminhtml/netevensync/product</action>
+                            </product>
+                            <console translate="title" module="netevensync">
+                                <title>Neteven Console</title>
+                                <sort_order>20</sort_order>
+                                <action>adminhtml/netevensync/console</action>
+                            </console>
+                        </children>
+                    </netevensync>
+                </children>
+            </catalog>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <netevensync translate="title" module="netevensync">
+                                            <title>Neteven Synchronization</title>
+                                            <sort_order>1000</sort_order>
+                                        </netevensync>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                        <catalog>
+                            <children>
+                                <netevensync translate="title" module="netevensync">
+                                    <title>Neteven</title>
+                                    <sort_order>1000</sort_order>
+			                        <children>
+			                            <product translate="title" module="netevensync">
+			                                <title>Neteven Selection</title>
+			                                <sort_order>10</sort_order>
+			                            </product>
+			                            <console translate="title" module="netevensync">
+			                                <title>Neteven Console</title>
+			                                <sort_order>20</sort_order>
+			                            </console>
+			                        </children>
+                                </netevensync>
+                            </children>
+                        </catalog>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    
+    <default>
+        <netevensync>
+            <inventory>
+                <enable>0</enable>
+                <frequency>1</frequency>
+                <start>0</start>
+                <selected>1</selected>
+                <stock>0</stock>
+                <parent_data>0</parent_data>
+            </inventory>
+            <stock>
+                <enable>0</enable>
+                <frequency>1</frequency>
+                <start>0</start>
+                <selected>1</selected>
+                <stock>0</stock>
+                <sync_prices>0</sync_prices>
+            </stock>
+            <order>
+                <enable>0</enable>
+                <frequency>1</frequency>
+                <start>0</start>
+            </order>
+            <console>
+                <url>https://evenmarketplaces.neteven.com</url>
+            </console>
+            <soap>
+                <wsdl>http://ws.neteven.com/NWS</wsdl>
+            </soap>
+        </netevensync>
+        
+        <carriers>
+            <neteven>
+                <active>1</active>
+                <sallowspecific>0</sallowspecific>
+                <model>netevensync/shipping_dynamic</model>
+                <name>Neteven</name>
+                <title>Dynamic</title>
+                <type>O</type>
+                <handling_type>F</handling_type>
+            </neteven>
+        </carriers>
+        
+        <payment>
+            <neteven translate="title" module="netevensync">
+                <active>1</active>
+                <model>netevensync/payment_method_neteven</model>
+                <order_status>pending</order_status>
+                <title>Neteven (Other or Unknown)</title>
+                <allowspecific>0</allowspecific>
+                <group>offline</group>
+            </neteven>
+        </payment>
+    </default>
+    
+    <crontab>
+        <jobs>
+            <netevensync_process_all>
+                <schedule>
+                    <cron_expr>*/15 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>netevensync/cron::runAllProcesses</model>
+                </run>
+            </netevensync_process_all>
+        </jobs>
+    </crontab>
+    
+    <netevensync>
+        <disallowed_attributes>
+            <!--
+            	Those are attributes (attribute codes) that must be excluded from additional attributes to be synchronized.
+            	They are excluded because whether because it is a non-sense to export them or because there are
+            	always exported.
+            	
+            	@see Neteven_NetevenSync_Model_Config::getDisallowedAttributes
+            -->
+            <cost/>
+            <custom_design/>
+            <custom_design_from/>
+            <custom_design_to/>
+            <custom_layout_update/>
+            <description/>
+            <gallery/>
+            <image/>
+            <manufacturer/>
+            <media_gallery/>
+            <name/>
+            <options_container/>
+            <page_layout/>
+            <price/>
+            <price_view/>
+            <short_description/>
+            <sku/>
+            <small_image/>
+            <special_price/>
+            <status/>
+            <tax_class_id/>
+            <thumbnail/>
+            <tier_price/>
+            <visibility/>
+        </disallowed_attributes>
+        
+        <specific_fields>
+            <!--
+            	Those are Neteven specific fields that may require mapping
+            	Format: <code>Neteven Code</code>
+            	
+            	@see Neteven_NetevenSync_Model_Config::appendConfigNodes 
+            -->
+            <ean>EAN</ean>
+            <upc>UPC</upc>
+            <isbn>ISBN</isbn>
+            <asin>ASIN</asin>
+            <part_number>PartNumber</part_number>
+            <price_fixed>PriceFixed</price_fixed>
+            <price_starting>PriceStarting</price_starting>
+            <price_reserved>PriceReserved</price_reserved>
+            <price_retail>PriceRetail</price_retail>
+            <price_second_chance>PriceSecondChance</price_second_chance>
+            <price_best_offer>PriceBestOffer</price_best_offer>
+            <price_additional_1>PriceAdditional1</price_additional_1>
+            <price_additional_2>PriceAdditional2</price_additional_2>
+            <price_additional_3>PriceAdditional3</price_additional_3>
+            <price_additional_4>PriceAdditional4</price_additional_4>
+            <price_additional_5>PriceAdditional5</price_additional_5>
+            <state>Etat</state>
+            <lot_size>LotSize</lot_size>
+            <height>Height</height>
+            <width>Width</width>
+            <depth>Depth</depth>
+            <shipping_delay>ShippingDelay</shipping_delay>
+            <sku_family>SKUFamily</sku_family>
+        </specific_fields>
+        
+        <order_statuses>
+            <!--
+            	Those are Neteven order statuses that require mapping
+            	Format: <neteven_code>Admin Label</neteven_code>
+            -->
+            <toConfirm>To Confirm</toConfirm>
+            <Confirmed>Confirmed</Confirmed>
+            <Canceled>Canceled</Canceled>
+            <Refunded>Refunded</Refunded>
+            <Shipped>Shipped</Shipped>
+        </order_statuses>
+        
+        <payment_methods>
+            <!--
+            	Those are Neteven payment codes that require mapping
+            	Format: <neteven_code>magento_code</neteven_code>
+            	
+            	"neteven" payment payment is created is this module
+            -->
+            <CreditCard>ccsave</CreditCard>
+            <Check>checkmo</Check>
+            <PayPal>paypal_standard</PayPal>
+            <Other>neteven</Other>
+            <Unknown>neteven</Unknown>
+        </payment_methods>
+
+        <inventory_languages>fr,en,de,es,it</inventory_languages>
+
+    </netevensync>
+</config>

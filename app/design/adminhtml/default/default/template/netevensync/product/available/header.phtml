@@ -1,0 +1,23 @@
+<?php
+/**
+ * @category	Neteven
+ * @package		Neteven_NetevenSync
+ * @copyright	Copyright (c) 2013 Agence Soon. (http://www.agence-soon.fr)
+ * @licence		http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author		Hervé G. - Twitter : @vrnet
+ */ 
+?>
+<?php
+$button = $this->getLayout()->createBlock('adminhtml/widget_button')
+	->setData(array(
+			'label'     => Mage::helper('netevensync')->__('Add Selected Products to Selection'),
+			'onclick'   => 'submitProductSelectionForm(\'' . $this->getUrl('*/*/addProducts') . '\')',
+			'class'   	=> 'success',
+			'id'		=> 'added_products_button'
+	));
+?>
+<h3><?php echo $this->__('Available Products')?></h3>
+<p class="switcher a-right">
+	<?php echo $button->toHtml(); ?>
+</p>
+<div class="divider"></div>
