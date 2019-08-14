@@ -104,6 +104,13 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
 
         $preparedItem = $this->_prepareFromMarketPlace($preparedItem);
 
+        // Init checksum, based on SKU, price + currency
+        $preparedItem->setChecksum(hash('sha1', implode('|', array(
+            $preparedItem->getSku(),
+            $preparedItem->getPrice()->getValue() / $preparedItem->getQuantity(),
+            $preparedItem->getPrice()->getCurrencyId(),
+        ))));
+
         return $preparedItem;
     }
 
@@ -142,26 +149,24 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
      */
     public function prepareExportItem($item)
     {
-        $order = $item;
+        $order  = $item;
         $status = $this->getConfig()->getMappedOrderStatus($order->getStatus(), 'magento');
 
         $preparedItem = array(
             'OrderID' => $item->getNetevenOrderId(),
-            'Status' => $status,
+            'Status'  => $status,
         );
 
-        if ($status == Neteven_NetevenSync_Model_Config::NETEVENSYNC_ORDER_STATUS_SHIPPED && (bool)$order->hasShipments(
-            )
-        ) {
-            $shipment = $order->getShipmentsCollection()->getFirstItem(
-            ); // We use only first shipment as Neteven only accepts one shipment per order
+        if ($status == Neteven_NetevenSync_Model_Config::NETEVENSYNC_ORDER_STATUS_SHIPPED && (bool) $order->hasShipments()) {
+            // We use only first shipment as Neteven only accepts one shipment per order
+            $shipment     = $order->getShipmentsCollection()->getFirstItem();
             $dateShipping = date(DATE_ATOM, strtotime($shipment->getCreatedAt()));
 
             $preparedItem['DateShipping'] = $dateShipping;
 
             $tracks = $shipment->getAllTracks();
             if (count($tracks) > 0) {
-                $track = reset($tracks); // We use only first track as Neteven only accepts one tracking per order
+                $track                          = reset($tracks); // We use only first track as Neteven only accepts one tracking per order
                 $preparedItem['TrackingNumber'] = $track->getNumber();
             }
         }
@@ -177,25 +182,68 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
      */
     public function processImportItems($items)
     {
+        /* @var $logger Neteven_NetevenSync_Helper_Logger */
+        $logger = Mage::helper('netevensync/logger');
         $result = array('success' => true, 'success_items_count' => count($items));
         foreach ($items as $item) {
 
-            if (!$this->_canImport($item)) {
+            // Init the logger
+            $logger
+                ->init(sprintf("Import order item [%s]", $item->getData('market_place_order_line_id')))
+                ->step("Initial information (item)", $item->getData())
+                ->part("Process")
+            ;
+
+            if (!$logger->condition("Can import?", $this->_canImport($item))) {
+                $logger->end();
                 continue;
             }
 
+            $logger->info("Retrieve the process_order_link object using the order_id");
             $orderLink = Mage::getModel('netevensync/process_order_link')->loadByNetevenOrderId($item->getOrderId());
+            $logger->step("The order link", $orderLink);
 
             // If order has already been imported and its status has changed, we update it
             if ($orderLink->getMagentoOrderId()) {
-                if ($orderLink->getOrderStatus() != $item->getStatus()) {
+                $logger->info("Magento's order ID found");
+                $logger->data(array(
+                    "order link order status" => $orderLink->getOrderStatus(),
+                    "item status"             => $item->getStatus(),
+                ));
+                if (!$logger->condition("Same order status between orderLink and item?", $orderLink->getOrderStatus() === $item->getStatus())) {
+                    $logger
+                        ->up()
+                        ->step("Update the order status of the order link")
+                        ->result($item->getStatus(), "Order status")
+                    ;
                     $orderLink->setOrderStatus($item->getStatus());
                     $orderLink->save();
+                    $logger->down();
                 }
-            } // If order has not been imported yet, we create or update quote
-            else {
-                $result = $this->processImportQuote($orderLink, $item);
             }
+
+            // If order has not been imported yet, we create or update quote
+            else {
+                $logger
+                    ->step("Process quote importing")
+                    ->up()
+                ;
+                $result = $this->processImportQuote($orderLink, $item);
+                $logger->down();
+            }
+
+            // Can Invoice?
+            $canInvoice = (int) in_array($orderLink->getOrderStatus(), Mage::getSingleton('netevensync/config')->getInvoiceStatus());
+            $logger->step("can invoice?", $canInvoice);
+
+            // Update the link
+            $orderLink
+                ->setCanInvoice($canInvoice)
+                ->setHasBeenProcessed(1)
+                ->save()
+            ;
+
+            $logger->end();
         }
 
         return $result;
@@ -209,36 +257,45 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
      */
     protected function _canImport($item)
     {
+        $logger = Mage::helper('netevensync/logger');
 
         // Get address data
         // Check if data is empty or equal to a dash because Neteven may sends whether an empty values or a dash...
         $shippingAddress = $item->getShippingAddress();
         $address1 = $shippingAddress->getAddress1();
         if ($address1 == '-') {
+            $logger->info("Set address1 to empty string");
             $address1 = '';
         }
         $address2 = $shippingAddress->getAddress2();
         if ($address2 == '-') {
+            $logger->info("Set address2 to empty string");
             $address2 = '';
         }
         $pseudo = $item->getShippingAddress()->getPseudo();
         if ($pseudo == '-') {
+            $logger->info("Set pseudo to empty string");
             $pseudo = '';
         }
 
         // Check if shipping address is valid
         if ($address1 == '' && $address2 == '') {
+            $logger->info("Address1 and adress2 are empty");
             return false;
         }
 
         // Check if "pseudo" exists for MarketPlaceId 5
         if ($item->getMarketPlaceId() == '5' && $pseudo == '') {
+            $logger->info("Marketplace is 5 and pseudo is empty");
             return false;
         }
 
+        // Last check
         // Check if order status is allowed
         $allowedStatuses = $this->getConfig()->getAllowedNetevenOrderStatesForImport();
-        if (!in_array($item->getStatus(), $allowedStatuses)) {
+        $goodStatus = in_array($item->getStatus(), $allowedStatuses);
+        $logger->step("Status allowed", $goodStatus);
+        if (!$goodStatus) {
             return false;
         }
 
@@ -268,6 +325,8 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
      */
     public function finishImportProcess($mode)
     {
+        /* @var $logger Neteven_NetevenSync_Helper_Logger */
+        $logger = Mage::helper('netevensync/logger');
         $success = true;
 
         $this->flushTempItems();
@@ -275,25 +334,45 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
         // Update already imported orders
         $ordersToUpdate = Mage::getModel('netevensync/process_order_link')
             ->getCollection()
-            ->addFieldToFilter('magento_order_id', array('notnull' => true));
+            ->addFieldToFilter('magento_order_id', array('notnull' => true))
+            ->addFieldToFilter('has_been_processed', 1)
+        ;
+
+        $logger->init("Update order [finish import process]");
 
         if ($ordersToUpdate->count()) {
             foreach ($ordersToUpdate as $orderLink) {
+                $logger
+                    ->part(sprintf("Update order %d", $orderLink->getMagentoOrderId()))
+                ;
+                $logger->data("link", $orderLink);
                 $order = Mage::getModel('sales/order')->load($orderLink->getMagentoOrderId());
-                $this->getConvertor()->updateOrder($order, $orderLink->getOrderStatus());
+                $logger->step("Load order", $order->getData());
+                $logger->up();
+                $this->getConvertor()->updateOrder($order, $orderLink->getOrderStatus(), (bool) $orderLink->getCanInvoice());
             }
         }
+
+        $logger->end();
 
         // Create not yet imported orders
         $ordersToCreate = Mage::getModel('netevensync/process_order_link')
             ->getCollection()
-            ->addFieldToFilter('magento_order_id', array('null' => true));
+            ->addFieldToFilter('magento_order_id', array('null' => true))
+            ->addFieldToFilter('has_been_processed', 1)
+        ;
 
-        if ($ordersToCreate->count()) {
+        $logger->init("Create orders");
 
+        if ($logger->condition("How many orders to create?", $ordersToCreate->count())) {
+            $logger->info("Loop on orders to create");
             foreach ($ordersToCreate as $orderLink) {
+                $logger->part("Create order");
+                $logger->data('order link', $orderLink);
+
                 $quote = Mage::getModel('sales/quote');
-                $quote->setStore(Mage::app()->getDefaultStoreView())->load($orderLink->getMagentoQuoteId());
+                $store = Mage::app()->getStore($orderLink->getStoreId());
+                $quote->setStore($store)->load($orderLink->getMagentoQuoteId());
 
                 // Retrieve payment from DB and assign it to quote
                 $quotePayment = $quote->getPayment();
@@ -309,6 +388,12 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
                 // Retrieve Neteven market place order id from DB and assign to quote
                 $quote->setNetevenMarketPlaceOrderId($orderLink->getNetevenMarketPlaceOrderId());
 
+                // Retrieve Neteven market place name from DB and assign to quote
+                $quote->setNetevenMarketPlaceName($orderLink->getNetevenMarketPlaceName());
+
+                // Can invoice the order?
+                $quote->setCanInvoiceOrder((bool) $orderLink->getCanInvoice());
+
                 $order = $this->getConvertor()->createOrder($quote);
 
                 if ($orderId = $order->getId()) {
@@ -318,6 +403,20 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
                     $success = false;
                 }
             }
+        }
+
+        $logger->end();
+
+        // Bulk update
+        $links = Mage::getModel('netevensync/process_order_link')
+            ->getCollection()
+            ->addFieldToFilter('has_been_processed', 1)
+        ;
+        foreach ($links as $link) {
+            $link
+                ->setHasBeenProcessed(null)
+                ->save()
+            ;
         }
 
         return $success;
@@ -345,53 +444,119 @@ class Neteven_NetevenSync_Model_Process_Order extends Neteven_NetevenSync_Model_
      */
     public function processImportQuote($orderLink, $item)
     {
+        /* @var $logger Neteven_NetevenSync_Helper_Logger */
+        $logger = Mage::helper('netevensync/logger');
 
         $result = array('success' => true, 'success_items_count' => 1);
+
+        $logger->info("Instanciate new quote");
         $quote = Mage::getModel('sales/quote');
 
         if ($magentoQuoteId = $orderLink->getMagentoQuoteId()) {
-            $quote->setStore(Mage::app()->getDefaultStoreView())->load($magentoQuoteId);
+            $logger->info("Set the quote store in purpose to load the quote");
+
+            $store = $orderLink->getStoreId() ? Mage::app()->getStore($orderLink->getStoreId()) : Mage::app()->getDefaultStoreView();
+
+            $logger->logStore($store);
+            Mage::helper('netevensync')->updateStoreConfiguration($store);
+
+            $logger->info("Load the quote");
+            $quote
+                ->setStore($store)
+                ->load($magentoQuoteId)
+            ;
         }
 
         // If quote does not exist in Magento, we create it
-        if (!$quote->getId()) {
-
+        if ($logger->condition("Is the quote a new one?", !$quote->getId())) {
             try {
+                $logger->info("Create the quote");
                 $quote = $this->getConvertor()->createQuote($item);
             } catch (Exception $e) {
-                Mage::helper('netevensync')->log("\n" . $e->__toString());
+                $logger->exception($e);
+                Mage::helper('netevensync')->log($e);
                 $result = array('success' => false, 'success_items_count' => 0);
                 return $result;
             }
 
-            if (!$quote instanceof Mage_Sales_Model_Quote) {
+            if (!$logger->condition("Is the quote a real quote?", $quote instanceof Mage_Sales_Model_Quote)) {
+                $logger->up()->err("What?")->down();
                 $result = array('success' => false, 'success_items_count' => 0);
             } else {
+                $logger->startComparison("Update the order link", $orderLink->getData());
+
                 $orderLink
                     ->setNetevenOrderId($item->getOrderId())
                     // Store Neteven marketplace order id in DB for use in finishImportProcess()
                     ->setNetevenMarketPlaceOrderId($item->getMarketPlaceOrderId())
+                    // Store Neteven marketplace name in DB for use in finishImportProcess()
+                    ->setNetevenMarketPlaceName($item->getMarketPlaceName())
                     ->setNetevenCustomerId($item->getCustomerId())
                     ->setMagentoQuoteId($quote->getId())
                     // Store Neteven payment method in DB for use in finishImportProcess()
                     ->setPaymentMethod($item->getPaymentMethod())
                     // Store Neteven order status in DB for use in finishImportProcess()
                     ->setOrderStatus($item->getStatus())
+                    // Store ID Magento
+                    ->setStoreId($quote->getStoreId())
                     ->save();
-            }
-        } // Otherwise, we add new item to quote
-        else {
-            $quote = $this->getConvertor()->addItemToQuote($item, $quote);
 
-            if (!$quote instanceof Mage_Sales_Model_Quote) {
+                $logger->endComparison($orderLink->getData());
+            }
+        } // Otherwise, we try to add new item to quote
+        else {
+            $logger->info("The quote exists, update it");
+            $logger->step("The existing quote", $quote->getData());
+            $logger->info("We try to add new item to existing quote");
+            if ($logger->condition("Do the quote already have the item?", $this->_quoteHasItem($quote, $item))) {
+                $logger->info("Update item qty");
+                $this->getConvertor()->updateQuoteItem($item, $quote);
+            } else {
+                $logger->info("Add item to quote");
+                $quote = $this->getConvertor()->addItemToQuote($item, $quote);
+            }
+
+            if (!$logger->condition("Is the quote a real one?", $quote instanceof Mage_Sales_Model_Quote)) {
+                $logger->up()->err("What?")->down();
                 $result = array('success' => false, 'success_items_count' => 0);
             } else {
+                $logger->info("Collect quote totals and save");
+                $logger->startComparison("Quote", $quote->getData());
                 $quote->collectTotals();
                 $quote->save();
+                $logger->endComparison($quote->getData());
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Check if quote already has item
+     *
+     * @param Mage_Sales_Model_Quote $quote
+     * @param Varien_Object $netevenItem
+     * @return bool
+     */
+    protected function _quoteHasItem($quote, $netevenItem)
+    {
+        /* @var $logger Neteven_NetevenSync_Helper_Logger */
+        $logger = Mage::helper('netevensync/logger');
+
+        $logger->up();
+        $logger->data("Neteven item checksum", $netevenItem->getChecksum());
+
+        $quoteItems = $quote->getAllItems();
+        foreach ($quoteItems as $quoteItem) {
+            $logger->info(sprintf("Compare to %s", $quoteItem->getNetevenChecksum()));
+            if ($quoteItem->getNetevenChecksum() === $netevenItem->getChecksum()) {
+                $logger->down();
+                return true;
+            }
+        }
+
+        $logger->down();
+        return false;
     }
 
     /**

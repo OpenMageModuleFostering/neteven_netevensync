@@ -1,424 +1,427 @@
-<!-- 
-
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
 
 This is a copy of online WSDL file, copied here for easy of development purpose.
-
-
-
+Online version: http://ws.neteven.com/NWS
 
  -->
-
-<?xml version="1.0" encoding="UTF-8"?>
 <definitions
-  xmlns="http://schemas.xmlsoap.org/wsdl/"
-  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:tns="urn:NWS:examples"
-  targetNamespace="urn:NWS:examples"
-  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+        xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="urn:NWS:examples"
+        targetNamespace="urn:NWS:examples"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
 
   <types>
     <xsd:schema elementFormDefault="qualified" targetNamespace="urn:NWS:examples">
-        <xsd:element name="EchoRequestType">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="EchoInput" type="xsd:string" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:element name="EchoResponseType">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="EchoOutput" type="xsd:string" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:element name="GetItemsRequestType">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="GetItemsInput" type="xsd:string" /><!-- USELESS -->
-              <xsd:element minOccurs="0" maxOccurs="1" name="PageNumber" type="xsd:integer" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateModificationFrom" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="SKU" type="xsd:string"/>
-              <!-- GetItems returns only 200 items by request, you should specify
-                a page number in order to get other element than 200 firsts. -->
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:element name="TestConnectionRequest">
-          <xsd:complexType />
-        </xsd:element>
-        <xsd:element name="TestConnectionResponse">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="1" maxOccurs="1" name="TestConnectionResult" type="tns:StatusEnum" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:simpleType name="StatusEnum">
-          <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="Accepted" />
-            <xsd:enumeration value="Canceled" />
-            <xsd:enumeration value="NonConformantAuthorization" />
-            <xsd:enumeration value="NonConformantFormat" />
-            <xsd:enumeration value="Rejected" />
-            <xsd:enumeration value="UnexpectedInformation" />
-            <xsd:enumeration value="Inserted" />
-            <xsd:enumeration value="Updated" />
-            <xsd:enumeration value="Deleted" />
-            <!--<xsd:enumeration value="Unmodified" />-->
-            <xsd:enumeration value="Error" />
-          </xsd:restriction>
-        </xsd:simpleType>
-        <xsd:simpleType name="LangEnum">
-          <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="fr" />
-            <xsd:enumeration value="en" />
-            <xsd:enumeration value="de" />
-          </xsd:restriction>
-        </xsd:simpleType>
-        <xsd:complexType name="lstring">
-            <xsd:simpleContent>
-                <xsd:extension base="xsd:string">
-                    <xsd:attribute name="language_id" type="tns:LangEnum" default="fr"/>
-                </xsd:extension>
-            </xsd:simpleContent>
-        </xsd:complexType>
-        <xsd:simpleType name="CurrencyEnum">
-          <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="EUR" />
-            <xsd:enumeration value="GBP" />
-          </xsd:restriction>
-        </xsd:simpleType>
-        <xsd:complexType name="price">
-            <xsd:simpleContent>
-                <xsd:extension base="xsd:double">
-                    <xsd:attribute name="currency_id" type="tns:CurrencyEnum" default="EUR"/>
-                </xsd:extension>
-            </xsd:simpleContent>
-        </xsd:complexType>
-        <xsd:element name="AuthenticationHeader" type="tns:AuthenticationHeader" />
-        <xsd:complexType name="AuthenticationHeader">
+      <xsd:element name="EchoRequestType">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="1" maxOccurs="1" name="Method" type="xsd:string" /> <!-- AuthenticationMethod -->
-            <xsd:element minOccurs="1" maxOccurs="1" name="Login" type="xsd:string" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="Seed" type="xsd:string" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="Stamp" type="xsd:string" /> <!-- dateTime -->
-            <xsd:element minOccurs="1" maxOccurs="1" name="Signature" type="xsd:string" />
-          </xsd:sequence>
-          <xsd:anyAttribute />
-        </xsd:complexType>
-        <xsd:simpleType name="AuthenticationMethod">
-          <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="xxxxMD5V1" />
-          </xsd:restriction>
-        </xsd:simpleType>
-        <xsd:simpleType name="EtatEnum">
-          <xsd:restriction base="xsd:integer">
-            <xsd:enumeration value="1" />
-            <xsd:enumeration value="2" />
-            <xsd:enumeration value="3" />
-            <xsd:enumeration value="4" />
-            <xsd:enumeration value="5" />
-            <xsd:enumeration value="6" />
-            <xsd:enumeration value="7" />
-            <xsd:enumeration value="8" />
-            <xsd:enumeration value="9" />
-            <xsd:enumeration value="10" />
-            <xsd:enumeration value="11" />
-            <xsd:enumeration value="12" />
-            <xsd:enumeration value="13" />
-            <xsd:enumeration value="15" />
-          </xsd:restriction>
-        </xsd:simpleType>
-
-        <xsd:element name="InventoryItemsType">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="1" maxOccurs="1" name="nb_pages" type="xsd:integer" />
-              <xsd:element minOccurs="1" maxOccurs="1" name="nb_items" type="xsd:integer" />
-              <xsd:element minOccurs="1" maxOccurs="1" name="cur_page" type="xsd:integer" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="items" type="tns:ArrayOfInventoryItem" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-
-        <xsd:element name="PostItems">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="items" type="tns:ArrayOfInventoryItem" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-
-        <xsd:complexType name="ArrayOfSpecificFields">
-          <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="SpecificField" nillable="true" type="tns:SpecificField" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="EchoInput" type="xsd:string" />
           </xsd:sequence>
         </xsd:complexType>
-
-        <xsd:complexType name="SpecificField">
+      </xsd:element>
+      <xsd:element name="EchoResponseType">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="1" maxOccurs="1" name="Name" type="xsd:string" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="Value" type="xsd:string" />
-          </xsd:sequence>
-          <xsd:attribute name="lang" type="tns:LangEnum" />
-        </xsd:complexType>
-
-        <!--
-        <xsd:complexType name="ArrayOfWarehouses">
-          <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="Warehouse" nillable="true" type="tns:SpecificField" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="EchoOutput" type="xsd:string" />
           </xsd:sequence>
         </xsd:complexType>
-
-        <xsd:complexType name="Warehouse">
+      </xsd:element>
+      <xsd:element name="GetItemsRequestType">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="1" maxOccurs="1" name="WarehouseId" type="xsd:double" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="WarehouseStock" type="xsd:double" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="WarehouseShipped" type="xsd:double" />
-          </xsd:sequence>
-          <xsd:attribute name="lang" type="tns:LangEnum" />
-        </xsd:complexType>
-        -->
-
-        <xsd:complexType name="ArrayOfInventoryItem">
-          <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="InventoryItem" nillable="true" type="tns:InventoryItem" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="GetItemsInput" type="xsd:string" /><!-- USELESS -->
+            <xsd:element minOccurs="0" maxOccurs="1" name="PageNumber" type="xsd:integer" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateModificationFrom" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="SKU" type="xsd:string"/>
+            <!-- GetItems returns only 200 items by request, you should specify
+              a page number in order to get other element than 200 firsts. -->
           </xsd:sequence>
         </xsd:complexType>
-        <xsd:complexType name="InventoryItem">
+      </xsd:element>
+      <xsd:element name="TestConnectionRequest">
+        <xsd:complexType />
+      </xsd:element>
+      <xsd:element name="TestConnectionResponse">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="Title" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="SubTitle" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="Description" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="Comment" type="xsd:string" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="SKU" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="SKUFamily" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Brand" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="CodeProduit" type="xsd:string" /> <!--deprecated-->
-            <xsd:element minOccurs="0" maxOccurs="1" name="TypeCodeProduit" type="xsd:string" /> <!--deprecated-->
-            <xsd:element minOccurs="0" maxOccurs="1" name="EAN" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="UPC" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ISBN" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ASIN" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="PartNumber" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Quantity" type="xsd:integer" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="Cost" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Tva" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Ecotaxe" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Keywords" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailability" type="xsd:dateTime" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceFixed" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceStarting" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceReserved" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceRetail" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceSecondChance" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceBestOffer" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional1" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional2" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional3" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional4" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional5" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Etat" type="tns:EtatEnum" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="LotSize" type="xsd:integer" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="SupplierName" type="xsd:string" /> <!--deprecated-->
-            <xsd:element minOccurs="0" maxOccurs="1" name="Classification" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Weight" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Height" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Width" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Depth" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingLocal1" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppLocal1" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingLocal2" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppLocal2" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingLocal3" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppLocal3" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingInt1" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppInt1" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingInt2" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppInt2" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingInt3" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppInt3" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ShippingDelay" type="xsd:integer" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Image1" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Image2" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Image3" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Image4" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Image5" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Image6" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseId" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseStock" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseShipped" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ArrayOfSpecificFields" type="tns:ArrayOfSpecificFields" />
-            <!--<xsd:element minOccurs="0" maxOccurs="1" name="ArrayOfWarehouses" type="tns:ArrayOfWarehouses" />-->
+            <xsd:element minOccurs="1" maxOccurs="1" name="TestConnectionResult" type="tns:StatusEnum" />
           </xsd:sequence>
         </xsd:complexType>
-        <xsd:element name="PostItemsResponse">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="PostItemsResult" type="tns:ArrayOfInventoryItemStatusResponse" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:complexType name="ArrayOfInventoryItemStatusResponse">
+      </xsd:element>
+      <xsd:simpleType name="StatusEnum">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Accepted" />
+          <xsd:enumeration value="Canceled" />
+          <xsd:enumeration value="NonConformantAuthorization" />
+          <xsd:enumeration value="NonConformantFormat" />
+          <xsd:enumeration value="Rejected" />
+          <xsd:enumeration value="UnexpectedInformation" />
+          <xsd:enumeration value="Inserted" />
+          <xsd:enumeration value="Updated" />
+          <xsd:enumeration value="Deleted" />
+          <!--<xsd:enumeration value="Unmodified" />-->
+          <xsd:enumeration value="Error" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="LangEnum">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="fr" />
+          <xsd:enumeration value="en" />
+          <xsd:enumeration value="de" />
+          <xsd:enumeration value="es" />
+          <xsd:enumeration value="it" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="lstring">
+        <xsd:simpleContent>
+          <xsd:extension base="xsd:string">
+            <xsd:attribute name="language_id" type="tns:LangEnum" default="fr"/>
+          </xsd:extension>
+        </xsd:simpleContent>
+      </xsd:complexType>
+      <xsd:simpleType name="CurrencyEnum">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="EUR" />
+          <xsd:enumeration value="GBP" />
+          <xsd:enumeration value="USD" />
+          <xsd:enumeration value="CNY" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="price">
+        <xsd:simpleContent>
+          <xsd:extension base="xsd:double">
+            <xsd:attribute name="currency_id" type="tns:CurrencyEnum" default="EUR"/>
+          </xsd:extension>
+        </xsd:simpleContent>
+      </xsd:complexType>
+      <xsd:element name="AuthenticationHeader" type="tns:AuthenticationHeader" />
+      <xsd:complexType name="AuthenticationHeader">
+        <xsd:sequence>
+          <xsd:element minOccurs="1" maxOccurs="1" name="Method" type="xsd:string" /> <!-- AuthenticationMethod -->
+          <xsd:element minOccurs="1" maxOccurs="1" name="Login" type="xsd:string" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="Seed" type="xsd:string" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="Stamp" type="xsd:string" /> <!-- dateTime -->
+          <xsd:element minOccurs="1" maxOccurs="1" name="Signature" type="xsd:string" />
+        </xsd:sequence>
+        <xsd:anyAttribute />
+      </xsd:complexType>
+      <xsd:simpleType name="AuthenticationMethod">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="xxxxMD5V1" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="EtatEnum">
+        <xsd:restriction base="xsd:integer">
+          <xsd:enumeration value="1" />
+          <xsd:enumeration value="2" />
+          <xsd:enumeration value="3" />
+          <xsd:enumeration value="4" />
+          <xsd:enumeration value="5" />
+          <xsd:enumeration value="6" />
+          <xsd:enumeration value="7" />
+          <xsd:enumeration value="8" />
+          <xsd:enumeration value="9" />
+          <xsd:enumeration value="10" />
+          <xsd:enumeration value="11" />
+          <xsd:enumeration value="12" />
+          <xsd:enumeration value="13" />
+          <xsd:enumeration value="15" />
+        </xsd:restriction>
+      </xsd:simpleType>
+
+      <xsd:element name="InventoryItemsType">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="InventoryItemStatusResponse" nillable="true" type="tns:InventoryItemStatusResponse" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="nb_pages" type="xsd:integer" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="nb_items" type="xsd:integer" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="cur_page" type="xsd:integer" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="items" type="tns:ArrayOfInventoryItem" />
           </xsd:sequence>
         </xsd:complexType>
-        <xsd:complexType name="InventoryItemStatusResponse">
+      </xsd:element>
+
+      <xsd:element name="PostItems">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="1" name="ItemCode" type="xsd:string" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="StatusResponse" type="tns:StatusEnum" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="items" type="tns:ArrayOfInventoryItem" />
           </xsd:sequence>
         </xsd:complexType>
+      </xsd:element>
 
-        <xsd:element name="GetOrders">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="PageNumber" type="xsd:string"  />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateSaleFrom" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateSaleTo" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DatePaymentFrom" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DatePaymentTo" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateCreationFrom" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateCreationTo" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateModificationFrom" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateModificationTo" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailabilityFrom" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailabilityTo" type="xsd:dateTime" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceId" type="xsd:string" />
-              <xsd:element minOccurs="0" maxOccurs="1" name="OrderID" type="xsd:string" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
+      <xsd:complexType name="ArrayOfSpecificFields">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="SpecificField" nillable="true" type="tns:SpecificField" />
+        </xsd:sequence>
+      </xsd:complexType>
 
+      <xsd:complexType name="SpecificField">
+        <xsd:sequence>
+          <xsd:element minOccurs="1" maxOccurs="1" name="Name" type="xsd:string" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="Value" type="xsd:string" />
+        </xsd:sequence>
+        <xsd:attribute name="lang" type="tns:LangEnum" />
+      </xsd:complexType>
 
-        <xsd:element name="GetOrdersResponse">
-          <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element minOccurs="1" maxOccurs="1" name="PageNumber" type="xsd:string" />
-                <xsd:element minOccurs="1" maxOccurs="1" name="PagesTotal" type="xsd:string" />
-                <xsd:element minOccurs="0" maxOccurs="1" name="GetOrdersResult" type="tns:ArrayOfMarketPlaceOrder" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
+      <!--
+      <xsd:complexType name="ArrayOfWarehouses">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Warehouse" nillable="true" type="tns:SpecificField" />
+        </xsd:sequence>
+      </xsd:complexType>
 
-        <xsd:complexType name="ArrayOfMarketPlaceOrder">
+      <xsd:complexType name="Warehouse">
+        <xsd:sequence>
+          <xsd:element minOccurs="1" maxOccurs="1" name="WarehouseId" type="xsd:double" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="WarehouseStock" type="xsd:double" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="WarehouseShipped" type="xsd:double" />
+        </xsd:sequence>
+        <xsd:attribute name="lang" type="tns:LangEnum" />
+      </xsd:complexType>
+      -->
+
+      <xsd:complexType name="ArrayOfInventoryItem">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="InventoryItem" nillable="true" type="tns:InventoryItem" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="InventoryItem">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Title" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="SubTitle" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Description" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Comment" type="xsd:string" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="SKU" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SKUFamily" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Brand" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="CodeProduit" type="xsd:string" /> <!--deprecated-->
+          <xsd:element minOccurs="0" maxOccurs="1" name="TypeCodeProduit" type="xsd:string" /> <!--deprecated-->
+          <xsd:element minOccurs="0" maxOccurs="1" name="EAN" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="UPC" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ISBN" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ASIN" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="PartNumber" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Quantity" type="xsd:integer" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Cost" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Tva" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Ecotax" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Keywords" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailability" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceFixed" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceStarting" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceReserved" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceRetail" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceSecondChance" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceBestOffer" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional1" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional2" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional3" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional4" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceAdditional5" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Etat" type="tns:EtatEnum" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="LotSize" type="xsd:integer" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SupplierName" type="xsd:string" /> <!--deprecated-->
+          <xsd:element minOccurs="0" maxOccurs="1" name="Classification" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Weight" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Height" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Width" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Depth" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingLocal1" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppLocal1" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingLocal2" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppLocal2" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingLocal3" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppLocal3" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingInt1" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppInt1" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingInt2" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppInt2" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingInt3" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="PriceShippingSuppInt3" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ShippingDelay" type="xsd:integer" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Image1" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Image2" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Image3" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Image4" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Image5" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Image6" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseId" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseStock" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseShipped" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ArrayOfSpecificFields" type="tns:ArrayOfSpecificFields" />
+          <!--<xsd:element minOccurs="0" maxOccurs="1" name="ArrayOfWarehouses" type="tns:ArrayOfWarehouses" />-->
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PostItemsResponse">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="MarketPlaceOrder" nillable="true" type="tns:MarketPlaceOrder" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="PostItemsResult" type="tns:ArrayOfInventoryItemStatusResponse" />
           </xsd:sequence>
         </xsd:complexType>
-        <xsd:complexType name="MarketPlaceOrder">
+      </xsd:element>
+      <xsd:complexType name="ArrayOfInventoryItemStatusResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="InventoryItemStatusResponse" nillable="true" type="tns:InventoryItemStatusResponse" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="InventoryItemStatusResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="1" name="ItemCode" type="xsd:string" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="StatusResponse" type="tns:StatusEnum" />
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:element name="GetOrders">
+        <xsd:complexType>
           <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="1" name="ID" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="OrderID" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="OrderLineID" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Status" type="tns:OrderStatusEnum" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="CustomerId" type="xsd:string" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="PageNumber" type="xsd:string"  />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateSaleFrom" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateSaleTo" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DatePaymentFrom" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DatePaymentTo" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateCreationFrom" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateCreationTo" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateModificationFrom" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateModificationTo" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailabilityFrom" type="xsd:dateTime" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailabilityTo" type="xsd:dateTime" />
             <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceOrderId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceOrderLineId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceName" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceListingId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceSaleId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceInvoiceId" type="xsd:string"  />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceTransactionId" type="xsd:string"  />
-            <xsd:element minOccurs="0" maxOccurs="1" name="SKU" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="DateSale" type="xsd:dateTime" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="DatePayment" type="xsd:dateTime" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="DateShipping" type="xsd:dateTime" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailability" type="xsd:dateTime" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="TrackingNumber" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="AmountPaid" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="PaymentMethod" type="tns:PaymentMethodEnum" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="PaymentTransactionId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Quantity" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Price" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="InsuranceId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="InsuranceCost" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ShippingCost" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="FinalShippingCost" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="OrderShippingCost" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ShipperId" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="VAT" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="TotalCostWithVAT" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="MarketplaceFee" type="tns:price" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ProcessingFee" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="AmountToRefund" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseId" type="xsd:double" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseShippable" type="xsd:Boolean" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="BillingAddress" type="tns:MarketPlaceAddress" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="ShippingAddress" type="tns:MarketPlaceAddress" />
-
-          </xsd:sequence>
-        </xsd:complexType>
-        <xsd:simpleType name="OrderStatusEnum">
-          <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="toConfirm" />
-            <xsd:enumeration value="Confirmed" />
-            <xsd:enumeration value="Canceled" />
-            <xsd:enumeration value="Refunded" />
-            <xsd:enumeration value="Shipped" />
-          </xsd:restriction>
-        </xsd:simpleType>
-        <xsd:simpleType name="PaymentMethodEnum">
-          <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="CreditCard" />
-            <xsd:enumeration value="Check" />
-            <xsd:enumeration value="PayPal" />
-            <xsd:enumeration value="Other" />
-            <xsd:enumeration value="Unknown" />
-          </xsd:restriction>
-        </xsd:simpleType>
-        <xsd:complexType name="MarketPlaceAddress">
-          <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="1" name="FirstName" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="LastName" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Address1" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Address2" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="CityName" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="PostalCode" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Country" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Phone" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Mobile" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Fax" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Email" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Company" type="xsd:string" />
-            <xsd:element minOccurs="0" maxOccurs="1" name="Pseudo" type="xsd:string" />
-          </xsd:sequence>
-        </xsd:complexType>
-        <xsd:element name="PostOrders">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="orders" type="tns:ArrayOfMarketPlaceOrder" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:element name="PostOrdersResponse">
-          <xsd:complexType>
-            <xsd:sequence>
-              <xsd:element minOccurs="0" maxOccurs="1" name="PostOrdersResult" type="tns:ArrayOfMarketPlaceOrderStatusResponse" />
-            </xsd:sequence>
-          </xsd:complexType>
-        </xsd:element>
-        <xsd:complexType name="ArrayOfMarketPlaceOrderStatusResponse">
-          <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="unbounded" name="MarketPlaceOrderStatusResponse" nillable="true" type="tns:MarketPlaceOrderStatusResponse" />
-          </xsd:sequence>
-        </xsd:complexType>
-        <xsd:complexType name="MarketPlaceOrderStatusResponse">
-          <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="1" name="OrderLineID" type="xsd:string" />
             <xsd:element minOccurs="0" maxOccurs="1" name="OrderID" type="xsd:string" />
-            <xsd:element minOccurs="1" maxOccurs="1" name="StatusResponse" type="tns:StatusEnum" />
-            <!--deprecated : -->
-            <xsd:element minOccurs="0" maxOccurs="1" name="OrderId" type="xsd:string" />
           </xsd:sequence>
         </xsd:complexType>
+      </xsd:element>
+
+
+      <xsd:element name="GetOrdersResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="PageNumber" type="xsd:string" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="PagesTotal" type="xsd:string" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="GetOrdersResult" type="tns:ArrayOfMarketPlaceOrder" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+
+      <xsd:complexType name="ArrayOfMarketPlaceOrder">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="MarketPlaceOrder" nillable="true" type="tns:MarketPlaceOrder" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="MarketPlaceOrder">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="1" name="ID" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="OrderID" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="OrderLineID" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Status" type="tns:OrderStatusEnum" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="CustomerId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceOrderId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceOrderLineId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceName" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceListingId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceSaleId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceInvoiceId" type="xsd:string"  />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketPlaceTransactionId" type="xsd:string"  />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SKU" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="DateSale" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="DatePayment" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="DateShipping" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="DateAvailability" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TrackingNumber" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TrackingInfo" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="AmountPaid" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="PaymentMethod" type="tns:PaymentMethodEnum" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="PaymentTransactionId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Quantity" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Price" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="InsuranceId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="InsuranceCost" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ShippingCost" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="FinalShippingCost" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="OrderShippingCost" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ShipperId" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="VAT" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TotalCostWithVAT" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="MarketplaceFee" type="tns:price" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Ecotax" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ProcessingFee" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="AmountToRefund" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseId" type="xsd:double" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="WarehouseShippable" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="BillingAddress" type="tns:MarketPlaceAddress" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="ShippingAddress" type="tns:MarketPlaceAddress" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="DeliveryInstructions" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="OrderStatusEnum">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="toConfirm" />
+          <xsd:enumeration value="Confirmed" />
+          <xsd:enumeration value="Canceled" />
+          <xsd:enumeration value="Refunded" />
+          <xsd:enumeration value="Shipped" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="PaymentMethodEnum">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="CreditCard" />
+          <xsd:enumeration value="Check" />
+          <xsd:enumeration value="PayPal" />
+          <xsd:enumeration value="Other" />
+          <xsd:enumeration value="Unknown" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="MarketPlaceAddress">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="1" name="FirstName" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="LastName" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Address1" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Address2" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="CityName" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="PostalCode" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="StateProvince" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Country" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Phone" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Mobile" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Fax" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Email" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Company" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Pseudo" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="PostOrders">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="orders" type="tns:ArrayOfMarketPlaceOrder" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="PostOrdersResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="PostOrdersResult" type="tns:ArrayOfMarketPlaceOrderStatusResponse" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="ArrayOfMarketPlaceOrderStatusResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="MarketPlaceOrderStatusResponse" nillable="true" type="tns:MarketPlaceOrderStatusResponse" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="MarketPlaceOrderStatusResponse">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="1" name="OrderLineID" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="OrderID" type="xsd:string" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="StatusResponse" type="tns:StatusEnum" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="StatusResponseDetail" type="xsd:string" />
+          <!--deprecated : -->
+          <xsd:element minOccurs="0" maxOccurs="1" name="OrderId" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
     </xsd:schema>
   </types>
 
@@ -514,73 +517,73 @@ This is a copy of online WSDL file, copied here for easy of development purpose.
     <wsdl:operation name="Echo">
       <wsdl:documentation>Echo service available for testing purposes</wsdl:documentation>
       <soap:operation soapAction="Echo" style="document" />
-          <wsdl:input>
-            <soap:body use="literal"/>
-          </wsdl:input>
-          <wsdl:output>
-            <soap:body use="literal"/>
-          </wsdl:output>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
 
     <wsdl:operation name="GetItems">
       <wsdl:documentation>Retrieve inventory items</wsdl:documentation>
       <soap:operation soapAction="GetItems" style="document" />
-          <wsdl:input>
-            <soap:body use="literal"/>
-            <soap:header message="tns:TestConnectionAuthenticationHeader" part="AuthenticationHeader" use="literal" />
-          </wsdl:input>
-          <wsdl:output>
-            <soap:body use="literal"/>
-          </wsdl:output>
+      <wsdl:input>
+        <soap:body use="literal"/>
+        <soap:header message="tns:TestConnectionAuthenticationHeader" part="AuthenticationHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
     </wsdl:operation>
 
     <wsdl:operation name="TestConnection">
       <wsdl:documentation>Authentication</wsdl:documentation>
       <soap:operation soapAction="TestConnection" style="document" />
-          <wsdl:input>
-            <soap:body use="literal" />
-            <soap:header message="tns:TestConnectionAuthenticationHeader" part="AuthenticationHeader" use="literal" />
-          </wsdl:input>
-          <wsdl:output>
-            <soap:body use="literal" />
-          </wsdl:output>
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:TestConnectionAuthenticationHeader" part="AuthenticationHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
 
     <wsdl:operation name="PostItems">
       <wsdl:documentation>Upload inventory items</wsdl:documentation>
       <soap:operation soapAction="PostItems" style="document" />
-          <wsdl:input>
-            <soap:body use="literal" />
-            <soap:header message="tns:PostItemsAuthenticationHeader" part="AuthenticationHeader" use="literal" />
-          </wsdl:input>
-          <wsdl:output>
-            <soap:body use="literal" />
-          </wsdl:output>
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:PostItemsAuthenticationHeader" part="AuthenticationHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
 
 
     <wsdl:operation name="GetOrders">
       <wsdl:documentation>Retrieve orders</wsdl:documentation>
       <soap:operation soapAction="GetOrders" style="document" />
-          <wsdl:input>
-            <soap:body use="literal" />
-            <soap:header message="tns:GetOrdersAuthenticationHeader" part="AuthenticationHeader" use="literal" />
-          </wsdl:input>
-          <wsdl:output>
-            <soap:body use="literal" />
-          </wsdl:output>
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetOrdersAuthenticationHeader" part="AuthenticationHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
 
     <wsdl:operation name="PostOrders">
       <wsdl:documentation>Upload orders</wsdl:documentation>
       <soap:operation soapAction="PostOrders" style="document" />
-        <wsdl:input>
-          <soap:body use="literal" />
-          <soap:header message="tns:PostOrdersAuthenticationHeader" part="AuthenticationHeader" use="literal" />
-        </wsdl:input>
-        <wsdl:output>
-          <soap:body use="literal" />
-        </wsdl:output>
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:PostOrdersAuthenticationHeader" part="AuthenticationHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
 
@@ -588,10 +591,10 @@ This is a copy of online WSDL file, copied here for easy of development purpose.
 
 
   <service name="NWS">
-    <wsdl:documentation>Neteven service, please send your comments/remarks to technique@neteven.com.
-    PDF Documentation : http://images.neteven.com/tmp/NWS.pdf</wsdl:documentation>
+    <wsdl:documentation>Neteven service, please send your comments/remarks to support@neteven.com.
+      PDF Documentation : http://images.neteven.com/tmp/NWS.pdf</wsdl:documentation>
     <port name="NWSServerPortType" binding="tns:NWSServerBinding">
-        <soap:address location="http://ws.neteven.com/NWS"/>
+      <soap:address location="https://ws.neteven.com/NWS"/>
     </port>
   </service>
 

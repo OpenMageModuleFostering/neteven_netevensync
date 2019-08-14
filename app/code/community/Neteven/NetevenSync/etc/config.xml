@@ -1,7 +1,8 @@
+<?xml version="1.0"?>
 <!--
 /**
  * This module manages data synchronisation from and to Neteven platform
- * 
+ *
  * @category    Neteven
  * @package     Neteven_NetevenSync
  * @copyright   Copyright (c) 2013 Agence Soon. (http://www.agence-soon.fr)
@@ -10,18 +11,18 @@
  */
 -->
 <!--
-@EVO	Flag Neteven Orders in admin Orders Grid
-@EVO	"Empty Neteven Selection" button in Neteven Selection
-@EVO	"Remove from Neteven Selection" in admin Products Grid
-@EVO	Customer account creation on orders import
+@EVO    Flag Neteven Orders in admin Orders Grid
+@EVO    "Empty Neteven Selection" button in Neteven Selection
+@EVO    "Remove from Neteven Selection" in admin Products Grid
+@EVO    Customer account creation on orders import
  -->
 <config>
     <modules>
         <Neteven_NetevenSync>
-            <version>2.0.0.2</version>
+            <version>2.2.4</version>
+            <!--<version_name></version_name>-->
         </Neteven_NetevenSync>
     </modules>
-    
     <global>
         <events>
             <catalog_product_save_after>
@@ -75,11 +76,11 @@
             </netevensync>
         </helpers>
         <models>
-        	<adminhtml>
-        		<rewrite>
-        			<config>Neteven_NetevenSync_Model_Adminhtml_Config</config>
-        		</rewrite>
-        	</adminhtml>
+            <adminhtml>
+                <rewrite>
+                    <config>Neteven_NetevenSync_Model_Adminhtml_Config</config>
+                </rewrite>
+            </adminhtml>
             <netevensync>
                 <class>Neteven_NetevenSync_Model</class>
                 <resourceModel>netevensync_resource</resourceModel>
@@ -116,10 +117,12 @@
                 <setup>
                     <module>Neteven_NetevenSync</module>
                 </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
             </netevensync_setup>
         </resources>
     </global>
-    
     <admin>
         <routers>
             <adminhtml>
@@ -131,7 +134,6 @@
             </adminhtml>
         </routers>
     </admin>
-    
     <adminhtml>
         <events>
             <adminhtml_init_system_config>
@@ -152,12 +154,6 @@
                         <class>Neteven_NetevenSync_Model_Observer</class>
                         <method>addNoticeConfigChange</method>
                     </netevensync_config_neteven_selection_changed>
-                    <!-- Update next sync dates -->
-                    <netevensync_config_neteven_update_nextsync>
-                        <type>singleton</type>
-                        <class>Neteven_NetevenSync_Model_Observer</class>
-                        <method>updateNextSync</method>
-                    </netevensync_config_neteven_update_nextsync>
                 </observers>
             </model_config_data_save_before>
             <catalog_product_attribute_update_before>
@@ -170,6 +166,15 @@
                     </netevensync_register_increment_mass_update>
                 </observers>
             </catalog_product_attribute_update_before>
+            <payment_info_block_prepare_specific_information>
+                <observers>
+                    <!-- Add custom payment info to info block in admin -->
+                    <netevensync_enrich_payment_info_block>
+                        <class>netevensync/observer</class>
+                        <method>enrichPaymentInfoBlock</method>
+                    </netevensync_enrich_payment_info_block>
+                </observers>
+            </payment_info_block_prepare_specific_information>
         </events>
         <translate>
             <modules>
@@ -230,16 +235,16 @@
                                 <netevensync translate="title" module="netevensync">
                                     <title>Neteven</title>
                                     <sort_order>1000</sort_order>
-			                        <children>
-			                            <product translate="title" module="netevensync">
-			                                <title>Neteven Selection</title>
-			                                <sort_order>10</sort_order>
-			                            </product>
-			                            <console translate="title" module="netevensync">
-			                                <title>Neteven Console</title>
-			                                <sort_order>20</sort_order>
-			                            </console>
-			                        </children>
+                                    <children>
+                                        <product translate="title" module="netevensync">
+                                            <title>Neteven Selection</title>
+                                            <sort_order>10</sort_order>
+                                        </product>
+                                        <console translate="title" module="netevensync">
+                                            <title>Neteven Console</title>
+                                            <sort_order>20</sort_order>
+                                        </console>
+                                    </children>
                                 </netevensync>
                             </children>
                         </catalog>
@@ -248,13 +253,15 @@
             </resources>
         </acl>
     </adminhtml>
-    
     <default>
         <netevensync>
+            <general>
+                <debug_advanced>0</debug_advanced>
+            </general>
             <inventory>
                 <enable>0</enable>
                 <frequency>1</frequency>
-                <start>0</start>
+                <start_datetime>2000-01-01 00:00:00</start_datetime>
                 <selected>1</selected>
                 <stock>0</stock>
                 <parent_data>0</parent_data>
@@ -262,7 +269,7 @@
             <stock>
                 <enable>0</enable>
                 <frequency>1</frequency>
-                <start>0</start>
+                <start_datetime>2000-01-01 00:00:00</start_datetime>
                 <selected>1</selected>
                 <stock>0</stock>
                 <sync_prices>0</sync_prices>
@@ -270,7 +277,7 @@
             <order>
                 <enable>0</enable>
                 <frequency>1</frequency>
-                <start>0</start>
+                <start_datetime>2000-01-01 00:00:00</start_datetime>
             </order>
             <console>
                 <url>https://evenmarketplaces.neteven.com</url>
@@ -279,7 +286,6 @@
                 <wsdl>http://ws.neteven.com/NWS</wsdl>
             </soap>
         </netevensync>
-        
         <carriers>
             <neteven>
                 <active>1</active>
@@ -291,7 +297,6 @@
                 <handling_type>F</handling_type>
             </neteven>
         </carriers>
-        
         <payment>
             <neteven translate="title" module="netevensync">
                 <active>1</active>
@@ -303,7 +308,6 @@
             </neteven>
         </payment>
     </default>
-    
     <crontab>
         <jobs>
             <netevensync_process_all>
@@ -316,48 +320,45 @@
             </netevensync_process_all>
         </jobs>
     </crontab>
-    
     <netevensync>
         <disallowed_attributes>
             <!--
-            	Those are attributes (attribute codes) that must be excluded from additional attributes to be synchronized.
-            	They are excluded because whether because it is a non-sense to export them or because there are
-            	always exported.
-            	
-            	@see Neteven_NetevenSync_Model_Config::getDisallowedAttributes
+                Those are attributes (attribute codes) that must be excluded from additional attributes to be synchronized.
+                They are excluded because whether because it is a non-sense to export them or because there are
+                always exported.
+                
+                @see Neteven_NetevenSync_Model_Config::getDisallowedAttributes
             -->
-            <cost/>
-            <custom_design/>
-            <custom_design_from/>
-            <custom_design_to/>
-            <custom_layout_update/>
-            <description/>
-            <gallery/>
-            <image/>
-            <manufacturer/>
-            <media_gallery/>
-            <name/>
-            <options_container/>
-            <page_layout/>
-            <price/>
-            <price_view/>
-            <short_description/>
-            <sku/>
-            <small_image/>
-            <special_price/>
-            <status/>
-            <tax_class_id/>
-            <thumbnail/>
-            <tier_price/>
-            <visibility/>
+            <cost />
+            <custom_design />
+            <custom_design_from />
+            <custom_design_to />
+            <custom_layout_update />
+            <description />
+            <gallery />
+            <image />
+            <media_gallery />
+            <name />
+            <options_container />
+            <page_layout />
+            <price />
+            <price_view />
+            <short_description />
+            <sku />
+            <small_image />
+            <special_price />
+            <status />
+            <tax_class_id />
+            <thumbnail />
+            <tier_price />
+            <visibility />
         </disallowed_attributes>
-        
         <specific_fields>
             <!--
-            	Those are Neteven specific fields that may require mapping
-            	Format: <code>Neteven Code</code>
-            	
-            	@see Neteven_NetevenSync_Model_Config::appendConfigNodes 
+                Those are Neteven specific fields that may require mapping
+                Format: <code>Neteven Code</code>
+                
+                @see Neteven_NetevenSync_Model_Config::appendConfigNodes 
             -->
             <ean>EAN</ean>
             <upc>UPC</upc>
@@ -383,11 +384,10 @@
             <shipping_delay>ShippingDelay</shipping_delay>
             <sku_family>SKUFamily</sku_family>
         </specific_fields>
-        
         <order_statuses>
             <!--
-            	Those are Neteven order statuses that require mapping
-            	Format: <neteven_code>Admin Label</neteven_code>
+                Those are Neteven order statuses that require mapping
+                Format: <neteven_code>Admin Label</neteven_code>
             -->
             <toConfirm>To Confirm</toConfirm>
             <Confirmed>Confirmed</Confirmed>
@@ -395,13 +395,12 @@
             <Refunded>Refunded</Refunded>
             <Shipped>Shipped</Shipped>
         </order_statuses>
-        
         <payment_methods>
             <!--
-            	Those are Neteven payment codes that require mapping
-            	Format: <neteven_code>magento_code</neteven_code>
-            	
-            	"neteven" payment payment is created is this module
+                Those are Neteven payment codes that require mapping
+                Format: <neteven_code>magento_code</neteven_code>
+                
+                "neteven" payment payment is created is this module
             -->
             <CreditCard>ccsave</CreditCard>
             <Check>checkmo</Check>
@@ -409,8 +408,6 @@
             <Other>neteven</Other>
             <Unknown>neteven</Unknown>
         </payment_methods>
-
         <inventory_languages>fr,en,de,es,it</inventory_languages>
-
     </netevensync>
 </config>

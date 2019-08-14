@@ -1,0 +1,17 @@
+<?php
+/**
+ * This file is part of Neteven_NetevenSync for Magento.
+ *
+ * @license All rights reserved
+ * @author Jacques Bodin-Hullin <j.bodinhullin@monsieurbiz.com> <@jacquesbh>
+ * @category Neteven
+ * @package Neteven_NetevenSync
+ * @copyright Copyright (c) 2015 Neteven (http://www.neteven.com/)
+ */
+/* @var $this Neteven_NetevenSync_Block_Adminhtml_Js_Alert */
+?>
+<?php if ($this->isMarketplaceMappingMisconfigured()): ?>
+<script>
+    $('messages').innerHTML = $('messages').innerHTML + '<ul class="messages"><li class="error-msg"><ul><li><?php echo $this->jsQuoteEscape($this->__("The mapping of the Neteven marketplaces is misconfigured. Please be sure that a marketplace is assigned to only one store!")); ?></li></ul></li></ul>';
+</script>
+<?php endif; ?>

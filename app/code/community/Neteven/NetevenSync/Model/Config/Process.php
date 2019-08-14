@@ -29,7 +29,7 @@ class Neteven_NetevenSync_Model_Config_Process extends Mage_Core_Model_Abstract 
 	}
 	
 	/**
-	 * Retrieve next sync as timestamp
+	 * Retrieve next sync as timestamp (UTC)
 	 * 
 	 * @return int
 	 */

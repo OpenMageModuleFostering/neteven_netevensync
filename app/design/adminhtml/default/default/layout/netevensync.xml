@@ -15,6 +15,9 @@
         <reference name="notifications">
             <block type="netevensync/adminhtml_notifications" name="netevensync.notifications" template="netevensync/notifications.phtml"/>
         </reference>
+        <reference name="js">
+            <block type="netevensync/adminhtml_js_alert" name="netevensync.js.alert" template="netevensync/js/alert.phtml" />
+        </reference>
     </default>
     
     <adminhtml_netevensync_runprocess>

@@ -1,13 +1,13 @@
 {
-    "name": "OpenMageModuleFostering/neteven_netevensync",
+    "name": "OpenMageModuleFostering/Neteven_NetevenSync",
     "type": "magento-module",
     "license": "OSL-3.0",
     "homepage": "",
     "description": "Official connector to Neteven marketplace solution.",
     "authors": [
     {
-        "name": "Herv\u00e9 Gu\u00e9tin",
-        "email": "herve.guetin@agence-soon.fr"
+        "name": "Jacques Bodin-Hullin",
+        "email": "j.bodinhullin@monsieurbiz.com"
     }
 ],
     "suggest": {

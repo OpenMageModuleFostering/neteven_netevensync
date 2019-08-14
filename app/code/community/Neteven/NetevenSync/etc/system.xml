@@ -20,82 +20,109 @@
             <show_in_website>0</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
+                <neteven_notice translate="label" module="paypal">
+                    <frontend_model>netevensync/adminhtml_system_config_fieldset_hint</frontend_model>
+                    <sort_order>0</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                </neteven_notice>
                 <general translate="label">
                     <label>General Configuration</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>10</sort_order>
-		            <show_in_default>1</show_in_default>
-		            <show_in_website>0</show_in_website>
-		            <show_in_store>0</show_in_store>
-		            <expanded>1</expanded>
-		            <fields>
-		                <email translate="label, comment">
-		                    <label>Email</label>
-		                    <frontend_type>text</frontend_type>
-		                    <comment>Example: email@domain.com</comment>
-		                    <validate>validate-email</validate>
-		                    <sort_order>10</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </email>
-		                <password translate="label, comment">
-		                    <label>Password</label>
-		                    <frontend_type>password</frontend_type>
-		                    <comment>Example: qwerty123</comment>
-		                    <validate>validate-password</validate>
-		                    <sort_order>20</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </password>
-		                <test translate="label, comment">
-		                    <label/>
-		                    <frontend_type>button</frontend_type>
-		                    <frontend_model>netevensync/adminhtml_system_config_test</frontend_model>
-		                    <comment>Please save configuration before testing connection setup</comment>
-		                    <sort_order>30</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </test>
-		                <debug translate="label">
-		                    <label>Enable debugging mode</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>40</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </debug>
-		                <sandbox translate="label">
-		                    <label>Enable sandbox mode</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>50</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </sandbox>
-		            </fields>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <email translate="label, comment">
+                            <label>Email</label>
+                            <frontend_type>text</frontend_type>
+                            <comment>Example: email@domain.com</comment>
+                            <validate>validate-email</validate>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </email>
+                        <password translate="label, comment">
+                            <label>Password</label>
+                            <frontend_type>password</frontend_type>
+                            <comment>Example: qwerty123</comment>
+                            <validate>validate-password</validate>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </password>
+                        <test translate="label, comment">
+                            <label/>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>netevensync/adminhtml_system_config_test</frontend_model>
+                            <comment>Please save configuration before testing connection setup</comment>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </test>
+                        <debug translate="label">
+                            <label>Enable debugging mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </debug>
+                        <debug_advanced translate="label">
+                            <label>Enable advanced debugging mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>This debug mode save full execution trace of the orders import and inventory export processes.</comment>
+                        </debug_advanced>
+                        <manage_logs translate="label">
+                            <label>Manage logs</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>netevensync/adminhtml_system_config_logs</frontend_model>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment>This part allows you to download or remove the logs of Neteven.</comment>
+                        </manage_logs>
+                        <sandbox translate="label">
+                            <label>Enable sandbox mode</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sandbox>
+                    </fields>
                 </general>
                 <inventory translate="label">
                     <label>Inventory Synchronization</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>20</sort_order>
-		            <show_in_default>1</show_in_default>
-		            <show_in_website>0</show_in_website>
-		            <show_in_store>1</show_in_store>
-		            <fields>
-		                <enable translate="label">
-		                    <label>Enable</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>10</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </enable>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enable translate="label">
+                            <label>Enable</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable>
                         <language translate="label">
                             <label>Neteven Language</label>
                             <frontend_type>select</frontend_type>
@@ -105,46 +132,58 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                         </language>
-		                <frequency translate="label">
-		                    <label>Synchronization Frequency</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_frequency</source_model>
-		                    <sort_order>20</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </frequency>
-		                <start translate="label">
-		                    <label>Start Hour</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_start</source_model>
-		                    <sort_order>30</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </start>
-		                <selected translate="label">
-		                    <label>Export Only Selected Products</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>40</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </selected>
-		                <stock translate="label">
-		                    <label>Export Out-Of-Stock Products</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>50</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </stock>
+                        <frequency translate="label comment" module="netevensync">
+                            <label>Synchronization Frequency</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>netevensync/adminhtml_system_config_source_frequency</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <comment>We use the "crontab" notation here. By example, if you select "Every 2 hours" the process will be executed at 0am, 2am, 4am, etc.</comment>
+                        </frequency>
+                        <start_datetime translate="label comment" module="netevensync">
+                            <label>After the</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>netevensync/adminhtml_system_config_form_field_datetime</frontend_model>
+                            <backend_model>netevensync/adminhtml_system_config_backend_datetime</backend_model>
+                            <validate>required-entry</validate>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <comment>Please enter a date here. If the date is in the past there will be no effect. If the date is in the future then the next executions will be done after it.</comment>
+                        </start_datetime>
+                        <selected translate="label">
+                            <label>Export Only Selected Products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                        </selected>
+                        <stock translate="label">
+                            <label>Export Out-Of-Stock Products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                        </stock>
                         <parent_data>
                             <label>Export Configurable Product</label>
                             <frontend_type>select</frontend_type>
@@ -154,95 +193,115 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <depends><enable>1</enable></depends>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
                         </parent_data>
-		                <attribute translate="label">
-		                    <label>Attributes To Synchronize</label>
-		                    <frontend_type>multiselect</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_attribute</source_model>
-		                    <sort_order>60</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </attribute>
-		                <incremental>
-		                    <frontend_model>netevensync/adminhtml_system_config_incremental</frontend_model>
-		                    <sort_order>1000</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-				            <export_type>inventory</export_type>
-		                </incremental>
-		                <full>
-		                    <frontend_model>netevensync/adminhtml_system_config_full</frontend_model>
-		                    <sort_order>1010</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-				            <export_type>inventory</export_type>
-		                </full>
-		            </fields>
+                        <attribute translate="label">
+                            <label>Attributes To Synchronize</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>netevensync/adminhtml_system_config_source_attribute</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                        </attribute>
+                        <incremental>
+                            <frontend_model>netevensync/adminhtml_system_config_incremental</frontend_model>
+                            <sort_order>1000</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <export_type>inventory</export_type>
+                        </incremental>
+                        <full>
+                            <frontend_model>netevensync/adminhtml_system_config_full</frontend_model>
+                            <sort_order>1010</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <export_type>inventory</export_type>
+                        </full>
+                    </fields>
                 </inventory>
                 <stock translate="label">
                     <label>Stocks Synchronization</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>40</sort_order>
-		            <show_in_default>1</show_in_default>
-		            <show_in_website>0</show_in_website>
-		            <show_in_store>0</show_in_store>
-		            <fields>
-		                <enable translate="label">
-		                    <label>Enable</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>10</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </enable>
-		                <frequency translate="label">
-		                    <label>Synchronization Frequency</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_frequency</source_model>
-		                    <sort_order>20</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </frequency>
-		                <start translate="label">
-		                    <label>Start Hour</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_start</source_model>
-		                    <sort_order>30</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </start>
-		                <selected translate="label">
-		                    <label>Export Only Selected Products</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>40</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </selected>
-		                <stock translate="label">
-		                    <label>Export Out-Of-Stock Products</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>50</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </stock>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields>
+                        <enable translate="label">
+                            <label>Enable</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable>
+                        <frequency translate="label comment" module="netevensync">
+                            <label>Synchronization Frequency</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>netevensync/adminhtml_system_config_source_frequency</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <comment>We use the "crontab" notation here. By example, if you select "Every 2 hours" the process will be executed at 0am, 2am, 4am, etc.</comment>
+                        </frequency>
+                        <start_datetime translate="label comment" module="netevensync">
+                            <label>After the</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>netevensync/adminhtml_system_config_form_field_datetime</frontend_model>
+                            <backend_model>netevensync/adminhtml_system_config_backend_datetime</backend_model>
+                            <validate>required-entry</validate>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <comment>Please enter a date here. If the date is in the past there will be no effect. If the date is in the future then the next executions will be done after it.</comment>
+                        </start_datetime>
+                        <selected translate="label">
+                            <label>Export Only Selected Products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                        </selected>
+                        <stock translate="label">
+                            <label>Export Out-Of-Stock Products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                        </stock>
                         <sync_prices translate="label, comment">
                             <label>Synchronize Prices Attributes</label>
                             <comment>Heavier for server</comment>
@@ -252,111 +311,137 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
-                            <depends><enable>1</enable></depends>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
                         </sync_prices>
-		                <incremental>
-		                    <frontend_model>netevensync/adminhtml_system_config_full</frontend_model>
-		                    <sort_order>1000</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-				            <export_type>stock</export_type>
-		                </incremental>
-		            </fields>
+                        <incremental>
+                            <frontend_model>netevensync/adminhtml_system_config_full</frontend_model>
+                            <sort_order>1000</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <export_type>stock</export_type>
+                        </incremental>
+                    </fields>
                 </stock>
                 <order translate="label">
                     <label>Orders Synchronization</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>50</sort_order>
-		            <show_in_default>1</show_in_default>
-		            <show_in_website>0</show_in_website>
-		            <show_in_store>1</show_in_store>
-		            <fields>
-		                <enable translate="label">
-		                    <label>Enable</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>adminhtml/system_config_source_yesno</source_model>
-		                    <sort_order>10</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-		                </enable>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enable translate="label">
+                            <label>Enable</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable>
+                        <invoice_status translate="label comment" module="netevensync">
+                            <label>Invoicing Status</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>netevensync/adminhtml_system_config_source_netevenOrderStatus::toOptionArray</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <comment><![CDATA[Select one or more status, which will create an invoice when an order is imported from Neteven with a status in your selection.]]></comment>
+                        </invoice_status>
                         <pdm_mapping translate="label">
                             <label>Orders Country</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>netevensync/adminhtml_system_config_source_order_pdm</source_model>
+                            <frontend_model>netevensync/adminhtml_system_config_form_field_order_mapping</frontend_model>
+                            <backend_model>netevensync/adminhtml_system_config_order_mapping</backend_model>
                             <sort_order>15</sort_order>
                             <show_in_default>0</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                         </pdm_mapping>
-		                <frequency translate="label">
-		                    <label>Synchronization Frequency</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_frequency</source_model>
-		                    <sort_order>20</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </frequency>
-		                <start translate="label">
-		                    <label>Start Hour</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_start</source_model>
-		                    <sort_order>30</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </start>
-		                <incremental>
-		                    <frontend_model>netevensync/adminhtml_system_config_incremental</frontend_model>
-		                    <sort_order>3000</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-				            <export_type>order</export_type>
-		                </incremental>
-		                <from>
-		                    <frontend_model>netevensync/adminhtml_system_config_from</frontend_model>
-		                    <sort_order>3010</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>0</show_in_store>
-				            <depends><enable>1</enable></depends>
-		                </from>
-		            </fields>
+                        <frequency translate="label comment" module="netevensync">
+                            <label>Synchronization Frequency</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>netevensync/adminhtml_system_config_source_frequency</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <comment>We use the "crontab" notation here. By example, if you select "Every 2 hours" the process will be executed at 0am, 2am, 4am, etc.</comment>
+                        </frequency>
+                        <start_datetime translate="label comment" module="netevensync">
+                            <label>After the</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>netevensync/adminhtml_system_config_form_field_datetime</frontend_model>
+                            <backend_model>netevensync/adminhtml_system_config_backend_datetime</backend_model>
+                            <validate>required-entry</validate>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <comment>Please enter a date here. If the date is in the past there will be no effect. If the date is in the future then the next executions will be done after it.</comment>
+                        </start_datetime>
+                        <incremental>
+                            <frontend_model>netevensync/adminhtml_system_config_incremental</frontend_model>
+                            <sort_order>3000</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                            <export_type>order</export_type>
+                        </incremental>
+                        <from>
+                            <frontend_model>netevensync/adminhtml_system_config_from</frontend_model>
+                            <sort_order>3010</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends>
+                                <enable>1</enable>
+                            </depends>
+                        </from>
+                    </fields>
                 </order>
                 <order_mapping_neteven translate="label">
                     <label>Neteven -> Magento Orders Mapping</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>51</sort_order>
-		            <show_in_default>1</show_in_default>
-		            <show_in_website>0</show_in_website>
-		            <show_in_store>0</show_in_store>
-		            <fields/>
-		        </order_mapping_neteven>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields/>
+                </order_mapping_neteven>
                 <order_mapping_magento translate="label">
                     <label>Magento -> Neteven Orders Mapping</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>52</sort_order>
-		            <show_in_default>1</show_in_default>
-		            <show_in_website>0</show_in_website>
-		            <show_in_store>0</show_in_store>
-		            <fields/>
-		        </order_mapping_magento>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>0</show_in_store>
+                    <fields/>
+                </order_mapping_magento>
                 <shipping translate="label">
                     <label>Shipping Information</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>60</sort_order>
-		            <show_in_default>1</show_in_default>
-		            <show_in_website>0</show_in_website>
-		            <show_in_store>1</show_in_store>
-		            <expanded>1</expanded>
-		            <fields>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>0</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
                         <shipping_notice translate="label">
                             <frontend_model>netevensync/adminhtml_system_config_hint</frontend_model>
                             <hint_content>Orders Country in Orders Configuration must be set for this configuration to be used when importing orders.</hint_content>
@@ -365,17 +450,17 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                         </shipping_notice>
-		                <carrier>
-		                    <label>Carrier</label>
-		                    <frontend_type>select</frontend_type>
-		                    <source_model>netevensync/adminhtml_system_config_source_carrier</source_model>
-		                    <validate>required-entry</validate>
-		                    <sort_order>10</sort_order>
-				            <show_in_default>1</show_in_default>
-				            <show_in_website>0</show_in_website>
-				            <show_in_store>1</show_in_store>
-		                </carrier>
-		            </fields>
+                        <carrier>
+                            <label>Carrier</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>netevensync/adminhtml_system_config_source_carrier</source_model>
+                            <validate>required-entry</validate>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </carrier>
+                    </fields>
                 </shipping>
             </groups>
         </netevensync>
