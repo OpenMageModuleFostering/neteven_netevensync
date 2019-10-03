@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Neteven_NetevenSync",
+    "name": "OpenMageModuleFostering\/Neteven_NetevenSync",
     "type": "magento-module",
     "license": "OSL-3.0",
     "homepage": "",
     "description": "Official connector to Neteven marketplace solution.",
     "authors": [
-    {
-        "name": "Jacques Bodin-Hullin",
-        "email": "j.bodinhullin@monsieurbiz.com"
-    }
-],
+        {
+            "name": "Jacques Bodin-Hullin",
+            "email": "j.bodinhullin@monsieurbiz.com"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
